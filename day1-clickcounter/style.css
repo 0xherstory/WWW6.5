@@ -1,0 +1,96 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  font-family: "Segoe UI", "PingFang SC", "Hiragino Sans GB", sans-serif;
+  background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+  color: #0f172a;
+}
+
+.app {
+  width: min(560px, 92vw);
+  padding: 24px;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+}
+
+h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.sub {
+  margin: 8px 0 20px;
+  color: #475569;
+}
+
+.panel {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px dashed #e2e8f0;
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.label {
+  color: #64748b;
+}
+
+.highlight strong {
+  font-size: 26px;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+button {
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#connect-btn {
+  background: #0ea5e9;
+  color: #fff;
+}
+
+#click-btn {
+  background: #16a34a;
+  color: #fff;
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.hint {
+  margin: 12px 0 4px;
+  color: #334155;
+}
+
+.status {
+  margin: 0;
+  color: #475569;
+}
