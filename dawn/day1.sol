@@ -8,4 +8,24 @@ contract clickcounter {
     function click()public {
         counter++;
     }
+    //
+    function reset()public {
+        counter = 0;
+    }
+
+    //
+    function decrease()public {
+        require(counter > 0, "counter is already zero");
+        counter--;
+    }
+
+    //
+    function getcounter()public view returns(uint256) {
+        return counter;
+    }
+
+    //
+    function clickmultiple(uint256 times)public  {
+        counter += times;
+}
 }
