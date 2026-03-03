@@ -1,0 +1,66 @@
+{
+	"compiler": {
+		"version": "0.8.31+commit.fd3a2265"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"name": "click",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "counter",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"Blaze/day01_ClickCounter.sol": "ClickCounter"
+		},
+		"evmVersion": "osaka",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"Blaze/day01_ClickCounter.sol": {
+			"keccak256": "0x2a3c7a299e120003683f4824a7fb12e87a2df11ce8fa05505aaa9e62e14fb013",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://de16a7a883607012dbef95762b08740c63cd264cbdd544bfbcbacc22a87b9160",
+				"dweb:/ipfs/Qmbe8QQdAUrwjDxe9eNq77VJck4zWCrrYsSAjjRJkirmFh"
+			]
+		}
+	},
+	"version": 1
+}
