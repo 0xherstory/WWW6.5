@@ -1,42 +1,22 @@
 // SPDX-License-Identifier: MIT
+
 pragma solidity ^0.8.0;
 
-contract AdminOnly {
-    address public owner;
-    uint256 public treasureAmount;
-    mapping(address => uint256) public withdrawalAllowance;
+contract SayMyName{
 
-    constructor() {
-        owner = msg.sender;
-    }
+    string name;
+    string bio;
 
-    modifier onlyOwner() {
-        require(msg.sender == owner, "Access denied: Only the owner can perform this action");
-        _;
+    function add(string memory _name, string memory _bio) public {
+        name = _name;
+        bio = _bio;
     }
-
-    function addTreasure(uint256 amount) public onlyOwner {
-        treasureAmount += amount;
+    function retrieve() public view returns (string memory, string memory){
+        return (name, bio);
     }
-
-    function approveWithdrawal(address recipient, uint256 amount) public onlyOwner {
-        require(amount <= treasureAmount, "Not enough treasure available");
-        withdrawalAllowance[recipient] = amount;
+    function saveAndRetrieve(string memory _name, string memory _bio) public returns(string memory, string memory){
+        name= _name;
+        bio = _bio;
+        return (name, bio);
     }
-
-    function withdrawTreasure(uint256 amount) public {
-        if (msg.sender == owner) {
-            // Owner can withdraw anything
-            require(amount <= treasureAmount, "Not enough treasury available for this action.");
-            treasureAmount -= amount;
-            return;
-        }
-        
-        // Regular users can only withdraw their approved amount
-        require(amount <= withdrawalAllowance[msg.sender], "You don't have approval for this amount");
-        require(amount <= treasureAmount, "Not enough treasure in the chest");
-        
-        withdrawalAllowance[msg.sender] -= amount;
-        treasureAmount -= amount;
     }
-}
