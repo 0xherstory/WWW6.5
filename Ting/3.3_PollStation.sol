@@ -43,4 +43,5 @@ contract PollStation{
 
         return voteCount[_candidateName];
     }
+
 }
