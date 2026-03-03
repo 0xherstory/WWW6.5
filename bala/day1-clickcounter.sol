@@ -1,28 +1,42 @@
-//SPDX-License-Identifier: MIT
-
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract ClickCounter {
-    uint256 public counter;
+contract AdminOnly {
+    address public owner;
+    uint256 public treasureAmount;
+    mapping(address => uint256) public withdrawalAllowance;
 
-    function click() public {
-        counter++;
+    constructor() {
+        owner = msg.sender;
     }
 
-    function reset() public {
-        counter = 0;
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Access denied: Only the owner can perform this action");
+        _;
     }
 
-    function decrease() public {
-        require(counter > 0, "Counter cannot be less than 0");
-        counter -=1;
+    function addTreasure(uint256 amount) public onlyOwner {
+        treasureAmount += amount;
     }
 
-    function getCounter() public view returns (uint256) {
-        return counter;
-    }
-    function clickMultipler(uint256 times) public {
-        counter += times;
+    function approveWithdrawal(address recipient, uint256 amount) public onlyOwner {
+        require(amount <= treasureAmount, "Not enough treasure available");
+        withdrawalAllowance[recipient] = amount;
     }
 
+    function withdrawTreasure(uint256 amount) public {
+        if (msg.sender == owner) {
+            // Owner can withdraw anything
+            require(amount <= treasureAmount, "Not enough treasury available for this action.");
+            treasureAmount -= amount;
+            return;
+        }
+        
+        // Regular users can only withdraw their approved amount
+        require(amount <= withdrawalAllowance[msg.sender], "You don't have approval for this amount");
+        require(amount <= treasureAmount, "Not enough treasure in the chest");
+        
+        withdrawalAllowance[msg.sender] -= amount;
+        treasureAmount -= amount;
+    }
 }
