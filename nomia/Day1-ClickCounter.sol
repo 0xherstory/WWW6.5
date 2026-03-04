@@ -17,7 +17,9 @@ contract ClickCounter{
 
     }
 
-
+    function clickMultiple(uint256 times) public{
+        counter+=times;
+    }
 
 
 }

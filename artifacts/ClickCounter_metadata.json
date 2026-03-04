@@ -13,6 +13,19 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "times",
+						"type": "uint256"
+					}
+				],
+				"name": "clickMultiple",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "counter",
 				"outputs": [
@@ -61,11 +74,11 @@
 	},
 	"sources": {
 		"nomia/Day1-ClickCounter.sol": {
-			"keccak256": "0xff83a49f883813b5c5024c044a196bbe83c3d508a81080fa911a406c3f425c64",
+			"keccak256": "0xc85a234be4d2b56c185e5c5513873d67c5448b67f970bb5b97069b0eec550ab9",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://d3a12b662f49305f638f1d02291cddb8ca04ea3ca4d2ca27e4e10aa513ec202c",
-				"dweb:/ipfs/QmdYZZCoRhis8hkAxmB57Dmk9Ff3ZP1JcbH6dVMfBoJigW"
+				"bzz-raw://c3cb008abb210cad43b4e56eacfe1aa76a5d242f22b38d4e2d6231a29ab04a0f",
+				"dweb:/ipfs/QmQDdo67d89YJvrrJQK5FhVBkjVnUKadnWYHKzUutqKivi"
 			]
 		}
 	},
