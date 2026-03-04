@@ -3,5 +3,4 @@
 
 # 忽略 artifacts 文件夹
 artifacts/
-#忽略.gitignore文件
-.gitignore
+
