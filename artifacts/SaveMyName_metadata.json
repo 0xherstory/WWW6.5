@@ -1,0 +1,82 @@
+{
+	"compiler": {
+		"version": "0.8.31+commit.fd3a2265"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "_name",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "_bio",
+						"type": "string"
+					}
+				],
+				"name": "add",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "retriver",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"beizi/day2_SaveMyName.sol": "SaveMyName"
+		},
+		"evmVersion": "osaka",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"beizi/day2_SaveMyName.sol": {
+			"keccak256": "0x98cb9b1d52809e7cbb61f285655dd24ac53a61cd8aeda0da3fa00e8580426f79",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://f1b67f3a3dabea11f5a53eedd70f19ed9bd86bd4687831f2c7e626795c66fb73",
+				"dweb:/ipfs/QmZCZQZQLLMjRDB3iRG85FMQ9ZVMWm3PvZmDYQmteQx2eX"
+			]
+		}
+	},
+	"version": 1
+}
