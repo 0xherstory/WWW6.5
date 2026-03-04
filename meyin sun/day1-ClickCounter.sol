@@ -8,4 +8,4 @@ contract ClickCounter {
     // 函数 - 增加计数器
     function click() public {
         counter++;
-    }
+    }}
