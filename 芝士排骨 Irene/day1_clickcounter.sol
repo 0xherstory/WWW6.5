@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+// 新增：记录谁部署了这个合约
 contract ClickCounter {
     uint256 public counter;
-    address public owner;  // 新增：记录谁部署了这个合约
+    address public owner;  
 
     // 新增：部署时自动记录部署者地址
     constructor() {
