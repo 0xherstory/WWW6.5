@@ -1,0 +1,82 @@
+{
+	"compiler": {
+		"version": "0.8.31+commit.fd3a2265"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "_name",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "_bio",
+						"type": "string"
+					}
+				],
+				"name": "add",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "retreive",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"nomia/Day2-SaveMyName.sol": "SaveMyName"
+		},
+		"evmVersion": "osaka",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"nomia/Day2-SaveMyName.sol": {
+			"keccak256": "0x949ac8e3e8eb2236829f79d2ab7a21bdf420630778be09f0a8809463e5f70059",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://05e8129723d6f537dba023e779b288df327785c9500e12f910bd20516cd3708b",
+				"dweb:/ipfs/QmdvRMapHFq4vGbzCwxq7WmZFPvE7ESRmMjqJkn6oA14cf"
+			]
+		}
+	},
+	"version": 1
+}

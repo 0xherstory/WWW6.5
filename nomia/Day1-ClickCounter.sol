@@ -12,5 +12,12 @@ contract ClickCounter{
         counter++;
     }
 
+    function reset() public {
+        counter = 0;
+
+    }
+
+
+
 
 }
