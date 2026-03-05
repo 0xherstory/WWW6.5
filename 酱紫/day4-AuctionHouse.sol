@@ -92,7 +92,9 @@ contract AuctionHouse {
 
 }
 
-// ⚠️ 一个需要注意的“坑”：增量 vs 总额
+// 本集案例YouTube学习链接：https://www.youtube.com/watch?v=OI9x4G6Tu-k&list=PL3gCWoU4wyU35lrmNNrQpk_-UIlmmco6M
+
+// gemini评论：⚠️ 一个需要注意的“坑”：增量 vs 总额
 // 你注释里提到了**“增量逻辑”**，在智能合约开发中，这里有一个非常微妙的区别：
 // 如果这是单纯的“报数”：用户调用 bid(100)，那么 bids[msg.sender] 变成了 100。
 // 如果涉及到“真金白银”发送 ETH, 如果用户之前已经投了 80，现在想加到 100，他这次调用函数时应该多转 20 块钱还是重新转 100 块钱？
