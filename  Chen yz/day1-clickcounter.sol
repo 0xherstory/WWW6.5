@@ -1,13 +1,12 @@
-// SPDX-License-Identifier:MIT
+// SPDX-License-Identifier: MIT
 
 pragma solidity ^0.8.0;
 
-contract ClickCounter{
+contract ClickCounter {
 
-    uint256 public counter ;
+    uint256 public counter;
 
-    function click() public
-    {
+    function click() public{
         counter ++;
     }
 }
