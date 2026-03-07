@@ -105,7 +105,7 @@ contract SimpleIOU {
     balances[msg.sender] -= _amount;
     (bool success, ) = payable(msg.sender).call{value: _amount}("");
     require(success, "Withdrawal failed.");
-
+    
     emit Transaction(msg.sender, payable(msg.sender), _amount, "Withdrawal");
   }
 
