@@ -56,8 +56,10 @@ contract EtherPiggyBank {
         require(balance[msg.sender] >= _amount, "Insufficient balance");
         balance[msg.sender] -= _amount;
     }
+
     
     
+
     // 目标：编写一个名为 getMyBalance 的函数（让普通成员查看自己的当前余额）
     // 指南：
     // a. 函数可见性应设为 public view。

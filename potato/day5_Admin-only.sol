@@ -39,6 +39,20 @@ contract AdminOnly {
         withdrawalAllowance[msg.sender] -= amount;
     }
 
+    // 只有owner能重置提取状态
+    function resetWithdrawalStatus(address user) public onlyOwner {
+        hasWithdrawn[user] = false;
+    }
+    
+    // 只有owner能转移所有权
+    function transferOwnership(address newOwner) public onlyOwner {
+        owner = newOwner;
+    }
+
+    // 只有owner能查看宝藏详情
+    function getTreasureDetails() public view onlyOwner returns (uint256) {
+        return treasureAmount;
+    }
 
     // 目标：编写一个名为 revokeWithdrawal 的函数（撤销某个人的提取资格）
     // 指南：
