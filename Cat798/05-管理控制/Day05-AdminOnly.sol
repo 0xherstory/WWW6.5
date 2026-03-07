@@ -1,72 +1,57 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract AdminOnly{
-    address public owner;
-    uint256 public treasureAmount;
+contract AdminOnly {
+    address public owner;  // 合约所有者
+    uint256 public treasureAmount;  // 宝藏总量
+    
+    // 映射:记录每个地址的提取额度
     mapping(address => uint256) public withdrawalAllowance;
-    mapping (address => bool) public hasWithdrawn;
-
+    // 映射:记录地址是否已提取
+    mapping(address => bool) public hasWithdrawn;
+    
+    // 构造函数:部署时设置owner
     constructor() {
-        owner = msg.sender;        // 设计合约拥有者
+        owner = msg.sender;
     }
     
-
-    // 通过修饰符时间可复用的访问控制
+    // 修饰符:只允许owner调用
     modifier onlyOwner() {
-        require(msg.sender == owner, "Access denied: Only the owner can perform this action");
-        _; // 表示权限检查之后的函数主体将被插入的位置
-    } 
-
-    // 往宝箱中添加宝物
-    function addTreasure(uint256 amount) public onlyOwner{
+        require(msg.sender == owner, "Not the owner");
+        _;
+    }
+    
+    // 只有owner能添加宝藏
+    function addTreasure(uint256 amount) public onlyOwner {
         treasureAmount += amount;
-
-    // 授权ta人取宝
+    }
+    
+    // 只有owner能批准提取额度
     function approveWithdrawal(address recipient, uint256 amount) public onlyOwner {
-        require(amount <= treasureAmount, "Not enough treasure available");
         withdrawalAllowance[recipient] = amount;
     }
-
-    // Anyone can attempt to withdraw, but only those with allowance will succeed
+    
+    // 任何人都可以提取(如果有额度)
     function withdrawTreasure(uint256 amount) public {
-
-        if(msg.sender == owner){
-            require(amount <= treasureAmount, "Not enough treasury available for this action.");
-            treasureAmount-= amount;
-
-            return;
-        }
-        uint256 allowance = withdrawalAllowance[msg.sender];
+        require(amount <= withdrawalAllowance[msg.sender], "Insufficient allowance");
+        require(!hasWithdrawn[msg.sender], "Already withdrawn");
         
-        // Check if user has an allowance and hasn't withdrawn yet
-        require(allowance > 0, "You don't have any treasure allowance");
-        require(!hasWithdrawn[msg.sender], "You have already withdrawn your treasure");
-        require(allowance <= treasureAmount, "Not enough treasure in the chest");
-        require(allowance >= amount, "Cannot withdraw more than you are allowed"); // condition to check if user is withdrawing more than allowed
-        
-        // Mark as withdrawn and reduce treasure
         hasWithdrawn[msg.sender] = true;
-        treasureAmount -= allowance;
-        withdrawalAllowance[msg.sender] = 0;
-        
+        withdrawalAllowance[msg.sender] -= amount;
     }
     
-    // Only the owner can reset someone's withdrawal status
+    // 只有owner能重置提取状态
     function resetWithdrawalStatus(address user) public onlyOwner {
         hasWithdrawn[user] = false;
     }
     
-    // Only the owner can transfer ownership
+    // 只有owner能转移所有权
     function transferOwnership(address newOwner) public onlyOwner {
-        require(newOwner != address(0), "Invalid address");
         owner = newOwner;
     }
     
+    // 只有owner能查看宝藏详情
     function getTreasureDetails() public view onlyOwner returns (uint256) {
         return treasureAmount;
     }
 }
-  
-
-
