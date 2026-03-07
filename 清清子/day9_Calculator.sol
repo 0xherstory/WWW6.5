@@ -42,7 +42,7 @@ contract Calculator{
         uint256 result = a/b;
         return result;
     }
-
+//我们将首先编写一个用于计算幂的函数
     function calculatePower(uint256 base, uint256 exponent)public view returns(uint256){
 
     ScientificCalculator scientificCalc = ScientificCalculator(scientificCalculatorAddress);
