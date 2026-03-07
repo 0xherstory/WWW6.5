@@ -6,4 +6,11 @@
 
 ## DAY 1
 try to build cursor env-->failed
-back to remix 
+back to remix deploy-->success
+
+## DAY 2
+forget the contract define
+don't call function in contract
+
+## DAY3
+start sumarize rules
