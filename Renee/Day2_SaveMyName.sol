@@ -19,7 +19,7 @@ contract SaveMyName {
     // 你可以写入任何名字和简介，然后随时读取出来
     */
 
-    function SaveAndRetrieve(string memory _name, string memory _bio) public returns (string memory, string memory) {
+    function SaveAndRetrieve(string memory _name, string memory _bio) public returns(string memory, string memory) {
         name = _name;
         bio = _bio;
         return (name, bio);

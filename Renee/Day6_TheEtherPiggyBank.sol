@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 contract TheEtherPiggyBank {
+    
     //data we need for our piggy bank
     address public bankManager;
     address[] members;

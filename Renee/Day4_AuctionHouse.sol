@@ -13,7 +13,7 @@ contract AuctionHouse{
     address[] public bidders;
     //不需要赋初始值吗？
 
-    constructor (string memory _item, uint _biddingTime){
+    constructor (string memory _item, uint _biddingTime) {
         owner = msg.sender;
         item = _item;
         auctionEndTime = block.timestamp + _biddingTime;

@@ -6,7 +6,7 @@ contract PollStation{
     string[] public candidateNames;
     mapping (string => uint256) voteCount;
 
-    function addCandidateNames (string memory _candidateName) public {
+    function addCandidateNames(string memory _candidateName) public {
         // Since the function is public, Solidity automatically creates a getter function for it, 
         // meaning users can retrieve the list of candidates without writing a separate function.
 
