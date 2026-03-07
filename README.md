@@ -54,21 +54,6 @@ projects/       Small Solidity projects
 
 ---
 
-## Progress Log
-
-| Day   | Topic                  | Status |
-| ----- | ---------------------- | ------ |
-| Day 1 | Solidity Basics        | ⬜      |
-| Day 2 | Variables & Functions  | ⬜      |
-| Day 3 | Visibility & Modifiers | ⬜      |
-| Day 4 | Structs & Arrays       | ⬜      |
-| Day 5 | Events & Errors        | ⬜      |
-| ...   | ...                    | ...    |
-
-This table will be updated as the program progresses.
-
----
-
 ## Example Smart Contracts
 
 During the program I will implement contracts such as:
@@ -96,7 +81,7 @@ Building in public helps to:
 
 ## Author
 
-Tina Shen
+Ting
 
 Researcher in computational design and sustainable architecture
 Currently exploring **Web3, Solidity, and decentralized systems**
