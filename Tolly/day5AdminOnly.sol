@@ -7,7 +7,7 @@ contract AdminOnly {
     mapping(address => bool) public hasWithdrawn;
 
     constructor() {
-        owner = ms// SPDX-License-Identifier: MITg.sender;
+        owner = msg.sender;
     }
     modifier onlyOwner() {
         require(msg.sender == owner, "Access denied: Only the owner can perform this action");
