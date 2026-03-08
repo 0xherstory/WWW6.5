@@ -19,7 +19,7 @@ contract SimpleIOU{
         registeredFriends[msg.sender] = true;
         friendList.push(msg.sender);
     }
-
+    
     modifier onlyOwner() {
         require(msg.sender == owner, "Only owner can perform this action");
         _;
@@ -53,7 +53,7 @@ contract SimpleIOU{
         
         debts[_debtor][msg.sender] += _amount;
     }
-
+    
     // Pay off debt using internal balance transfer
     function payFromWallet(address _creditor, uint256 _amount) public onlyRegistered {
         require(_creditor != address(0), "Invalid address");
@@ -67,6 +67,8 @@ contract SimpleIOU{
         balances[_creditor] += _amount;
         debts[msg.sender][_creditor] -= _amount;
     }
+ 
+    // Alternative transfer method using call()
     function transferEtherViaCall(address payable _to, uint256 _amount) public onlyRegistered {
         require(_to != address(0), "Invalid address");
         require(registeredFriends[_to], "Recipient not registered");
