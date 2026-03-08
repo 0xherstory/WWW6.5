@@ -44,12 +44,7 @@ contract AuctionHouse{
     function getallbidders()external view returns(address[] memory){
         return bidders;
     }
-    function moneyback()external{
-        require(ended,"Auction has not ended yet");
-        require(bids[msg.sender]>highestbid,"You can not get back money");
-        require(bids[msg.sender]>0,"You did not invest");
-        payable(msg.sender).transfer(bids[msg.sender]);
-    }
+
 
 
 
