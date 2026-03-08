@@ -1,0 +1,59 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract AuctionHouse {
+    address public owner;
+    string public item;
+    uint public auctionEndTime;
+    address private higherstBidder;
+    uint private highestBid;
+    bool public ended; //Boolean with "true" or "false"
+
+// --- Data Storage Extension ---
+    mapping(address => uint) public bids;
+    address[] public bidders; //Address Array
+
+// --- Constructor (Initialization) ---
+    constructor(string memory _item, uint _biddingTime){
+        owner = msg.sender;
+        item = _item;
+        auctionEndTime = block.timestamp + _biddingTime;
+    }
+    
+
+//place bids
+    function bid(uint amout) external {
+        //Requirement Checks
+        require(block.timestamp < auctionEndTime, "Auction has already ended."); //require(Constraint, if not...)
+        require(amount > 0, "Bid amount must be greater than zero.");
+        require(amount > bids[msg.sender], "New bid must be higher than your current bid.");
+
+        if (bids[msg.sender] ==0) {
+            bidders.push(msg.sender);
+        }
+
+        bids[msg.sender] = amount;
+
+        if (amount > highestBid) {
+            higherstBid = amount;
+            higherstBidder = msg.sender;
+        }
+    }
+}
+
+    // End the auction
+function endAuction() ecternal {
+    require(block.timestamp >= auctionEndTime, "Auction hasn't ended yet.");
+    require(!ended, "Auction end already called."); // ! Logical NOT operator
+    ended = true; //Inverting a boolean
+}
+
+function getWinner() external view returns (address, uint) {
+    require(ended, "Auction has not ended yet.");
+    return (highestBidder, highestBid);
+}
+
+
+function getAllBidders() external view returns (address[] memory) {
+    return bidders;
+}
