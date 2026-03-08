@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Day7 ApprovalPiggyBank Demo</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="card">
+      <h1>Day7 ApprovalPiggyBank</h1>
+      <p id="mode">Mode: Demo</p>
+      <p id="status">Ready</p>
+
+      <section class="stats">
+        <p>Manager: <strong id="manager">-</strong></p>
+        <p>Connected: <strong id="account">-</strong></p>
+        <p>Is Member: <strong id="isMember">false</strong></p>
+        <p>My Balance (ETH): <strong id="myBalance">0</strong></p>
+        <p>My Approval (ETH): <strong id="myApproval">0</strong></p>
+        <p>Total Deposits (ETH): <strong id="totalDeposits">0</strong></p>
+        <p>Contract ETH Balance: <strong id="contractBalance">0</strong></p>
+      </section>
+
+      <section class="panel">
+        <label>
+          New Member Address (manager only)
+          <input id="memberInput" type="text" placeholder="0x..." />
+        </label>
+        <button id="addMemberBtn" disabled>Add Member</button>
+      </section>
+
+      <section class="panel">
+        <label>
+          Deposit Amount (ETH)
+          <input id="depositInput" type="number" min="0" step="0.0001" placeholder="0.1" />
+        </label>
+        <button id="depositBtn" disabled>Deposit</button>
+      </section>
+
+      <section class="panel">
+        <label>
+          Approve Member Address (manager only)
+          <input id="approveMemberInput" type="text" placeholder="0x..." />
+        </label>
+        <label>
+          Approve Amount (ETH)
+          <input id="approveAmountInput" type="number" min="0" step="0.0001" placeholder="0.05" />
+        </label>
+        <button id="approveBtn" disabled>Approve Withdrawal</button>
+      </section>
+
+      <section class="panel">
+        <label>
+          Withdraw Amount (ETH, requires approval)
+          <input id="withdrawInput" type="number" min="0" step="0.0001" placeholder="0.02" />
+        </label>
+        <button id="withdrawBtn" disabled>Withdraw</button>
+      </section>
+
+      <section class="panel">
+        <label>
+          New Manager Address (manager only)
+          <input id="newManagerInput" type="text" placeholder="0x..." />
+        </label>
+        <button id="transferBtn" disabled>Transfer Manager</button>
+      </section>
+
+      <section class="actions">
+        <button id="connectBtn">Connect Wallet</button>
+        <button id="refreshBtn" disabled>Refresh</button>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
