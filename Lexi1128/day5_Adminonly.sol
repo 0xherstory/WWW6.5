@@ -1,4 +1,3 @@
-// @ts-nocheck
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
@@ -30,23 +29,24 @@ contract AdminOnly {
     // Anyone can attempt to withdraw, but only those with allowance will succeed
     function withdrawTreasure(uint256 amount) public {
 
-        if(msg.sender == owner){
+        if (msg.sender == owner) {
             require(amount <= treasureAmount, "Not enough treasury available for this action.");
-            treasureAmount-= amount;
-
+            treasureAmount -= amount;
             return;
         }
+
         uint256 allowance = withdrawalAllowance[msg.sender];
         
         require(allowance > 0, "You don't have any treasure allowance");
         require(!hasWithdrawn[msg.sender], "You have already withdrawn your treasure");
-        require(allowance <= treasureAmount, "Not enough treasure in the chest");
-        require(allowance >= amount, "Cannot withdraw more than you are allowed"); // condition to check if user is withdrawing more than allowed
-        
+        require(amount <= allowance, "Cannot withdraw more than you are allowed");
+        require(amount <= treasureAmount, "Not enough treasure in the chest");
+
         hasWithdrawn[msg.sender] = true;
-        treasureAmount -= allowance;
-        withdrawalAllowance[msg.sender] = 0;
+        treasureAmount -= amount;            // 扣除实际提取的数量
+        withdrawalAllowance[msg.sender] = allowance - amount;
         
+        // 此处可添加实际转账逻辑，例如 payable(msg.sender).transfer(amount);
     }
     
     function resetWithdrawalStatus(address user) public onlyOwner {
