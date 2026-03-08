@@ -46,7 +46,7 @@ contract EtherPiggybBank{
     function withdrawEther()public payable onlyregisteredmembers{
     require(msg.value>0,"withdraw money should >0");
     require(msg.value<=balance[msg.sender],"not enought money");
-    balance[msg.sender]-=msg.value; 
+    balance[msg.sender]-=msg.value; //
 
     }
 }

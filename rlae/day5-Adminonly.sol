@@ -46,7 +46,7 @@ contract Adminonly{
         owner=newOwner;
     }
     function getdetail()public onlyOwner view returns (uint256){
-        return treasureamount;        
+        return treasureamount;     //   
     }
 
 

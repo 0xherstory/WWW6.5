@@ -64,7 +64,7 @@ contract SimpleIOU{
     require(success,"trasnfer failed");
     }
     function getviewbalance()public onlyregisteredFriend view returns(uint256){
-       return balance[msg.sender];
+       return balance[msg.sender]; //
     }
 }
 
