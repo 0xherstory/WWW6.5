@@ -49,9 +49,9 @@ pragma solidity ^0.8.0;
     
     // 批准他人提取额度
     function approveWithdrawal(address _recipient, uint256 _amount) public onlyOwner{
-        withdrawalAllowance[recipient] = _amount;
+        withdrawalAllowance[_recipient] = _amount;
     }
-    
+
     // 重置状态和转移所有权
     function resetWithDrawalStatus(address _user) public onlyOwner{
         hasWithdrawn[_user] = false;
@@ -64,7 +64,7 @@ pragma solidity ^0.8.0;
         require(_amount > treasureAmount, "treasures are not enough.");
         
         hasWithdrawn[msg.sender] = true;
-        withdrawalAllowance[msg.sender] -= amount;
+        withdrawalAllowance[msg.sender] -=  _amount;
         // 宝藏数量也要减少
         treasureAmount -= _amount;
     }
@@ -87,6 +87,4 @@ pragma solidity ^0.8.0;
  2. 谁调用合约，则msg.sender就是谁的地址
  3. modifier 修饰符：modifier定义可重用的代码片段，根据“_;”的位置决定被修饰函数的执行顺序
  4. require(条件表达式，errMsg)：如果条件为false，交易回滚，对应的状态变更也会撤销；为使用的gas会退还给调用者
-
-
-  */
+*/
