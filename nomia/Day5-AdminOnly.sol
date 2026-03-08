@@ -29,7 +29,7 @@ contract AdminOnly{
     }
 
 
-    function approveWithdrawal(address recipient, uint256 amount) public onlyOwner {
+    function approveWithdrawal(address recipient, uint256 amount) public OnlyOwner {
         withdrawalAllowance[recipient] = amount;
     }
     
