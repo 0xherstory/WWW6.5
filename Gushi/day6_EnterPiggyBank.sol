@@ -1,0 +1,73 @@
+//SPDX-License-Identifier: MIT
+
+pragma solidity ^0.8.0;
+
+contract EnterPiggyBank{
+
+    //设置银行经理角色，有决定准入权限
+    //设置一个已被准入成员的数组，并且把成员跟是否已被准入关联起来（映射、布尔变量）
+    //再把成员跟她的余额关联上（映射）
+    address public bankManager;
+    address[] members;
+    mapping(address => bool) public registeredMembers;
+    mapping(address => uint256) balance;
+
+    //再来做一个只有初始化才运行的架构函数，把部署者设置成经理角色以及加入成员中
+    constructor(){
+        bankManager = msg.sender;
+        members.push(msg.sender);
+    }
+    //设置修饰符，等会儿可以通过它让添加成员函数只有经理能调用
+    modifier onlyBankManager(){
+        require(msg.sender == bankManager, "Only bank manager can perform this action");
+        _;
+    }
+    //设置修饰符，等会儿通过它让存取钱只有准入成员可以调用
+    modifier onlyRegisteredMember(){
+        require(registeredMembers[msg.sender], "Member not registered");
+        _;
+    }
+
+    //设置添加成员函数，只有经理可以操作，条件：成员地址不为空，不是经理本人也不是已准入成员
+    function addMembers(address _member)public onlyBankManager{
+        require(_member != address(0), "Invalid address");
+        require(_member != msg.sender, "Bank Manager is already a member");
+        require(!registeredMembers[_member], "Member already registered");
+        //满足以上情况的可以加入，首先把她的准入状态改成ture，这样下次就不会重复添加了，然后把她加入群组
+        registeredMembers[_member] = true;
+        members.push(_member);
+    }
+
+    //设置一个函数让大家能读取当前的成员清单
+    function getMembers() public view returns(address[] memory){
+        return members;
+    }
+
+    //设置存钱函数，首先可以模拟一下
+    //function depositAmount(uint256 _amount)public onlyRegisteredMembers{
+        //require(_amount > 0, "你真的想存钱吗？钱呢！");
+        //balance[msg.sender] += _amount;
+        //}
+    
+    //然后设置一个真正可以存以太坊货币的函数，会用到payable和msg.value这两个概念
+    function depositAmountEther() public payable onlyRegisteredMember{
+        require(msg.value > 0, "Invalid amount");
+        balance[msg.sender] = balance[msg.sender]+msg.value;
+
+    }
+
+    //让大家取钱的函数，但是只能取自己的余额哦
+    function withdrawAmount(uint256 _amount) public onlyRegisteredMember{
+        require(_amount > 0, "Invalid amount");
+        require(_amount <= balance[msg.sender], "Insufficient balance");
+        balance[msg.sender] -= _amount;
+ 
+    }
+
+    //可以查询某人的余额的函数
+    function getBalance(address _member) public view returns(uint256){
+        require(_member != address(0), "Invalid address");
+        return balance[_member];
+    }
+
+}
