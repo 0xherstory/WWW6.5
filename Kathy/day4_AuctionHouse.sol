@@ -5,7 +5,7 @@ contract AuctionHouse {
     address public owner;
     string public item;
     uint public auctionEndTime;
-    address private higherstBidder;
+    address private highestBidder;
     uint private highestBid;
     bool public ended; //Boolean with "true" or "false"
 
@@ -22,7 +22,7 @@ contract AuctionHouse {
     
 
 //place bids
-    function bid(uint amout) external {
+    function bid(uint amount) external {
         //Requirement Checks
         require(block.timestamp < auctionEndTime, "Auction has already ended."); //require(Constraint, if not...)
         require(amount > 0, "Bid amount must be greater than zero.");
@@ -35,25 +35,25 @@ contract AuctionHouse {
         bids[msg.sender] = amount;
 
         if (amount > highestBid) {
-            higherstBid = amount;
-            higherstBidder = msg.sender;
+            highestBid = amount;
+            highestBidder = msg.sender;
         }
     }
-}
 
     // End the auction
-function endAuction() ecternal {
-    require(block.timestamp >= auctionEndTime, "Auction hasn't ended yet.");
-    require(!ended, "Auction end already called."); // ! Logical NOT operator
-    ended = true; //Inverting a boolean
-}
+    function endAuction() external {
+        require(block.timestamp >= auctionEndTime, "Auction hasn't ended yet.");
+        require(!ended, "Auction end already called."); // ! Logical NOT operator
+        ended = true; //Inverting a boolean
+    }
 
-function getWinner() external view returns (address, uint) {
-    require(ended, "Auction has not ended yet.");
-    return (highestBidder, highestBid);
-}
+    function getWinner() external view returns (address, uint) {
+        require(ended, "Auction has not ended yet.");
+        return (highestBidder, highestBid);
+    }
 
 
-function getAllBidders() external view returns (address[] memory) {
-    return bidders;
+    function getAllBidders() external view returns (address[] memory) {
+        return bidders;
+    }
 }
