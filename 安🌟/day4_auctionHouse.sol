@@ -25,6 +25,7 @@ contract AuctionHouse {
         require(amount > 100, "Bid amount must be greater than 100.");
         require(amount > bids[msg.sender]*105/100, "New bid must be higher than your current bid * 1.05.");
 
+
         
         if (bids[msg.sender] == 0) {       //why not use owner
             bidders.push(msg.sender);
