@@ -17,7 +17,7 @@ contract AdminOnly {
 
     //modifier（修饰符）让我们能够创建可以附加到函数中的可复用的小型权限检查逻辑。
     //这个修饰符会检查调用者是否是拥有者。如果不是，函数将不会继续执行。
-    //符号 `_` 表示权限检查之后的函数主体将被插入的位置（它是一个占位符）。
+    //符号 `_` 表示权限检查之后的函数主体将被插入的位置（它是一个占位符）。比如addTreasure函数使用了onlyOwner修饰符，那么在执行addTreasure函数时，首先会执行onlyOwner修饰符中的代码进行权限检查，如果检查通过，才会继续执行addTreasure函数的主体代码。
     //使用这个修饰符，我们可以确保只有管理员才能执行特定的函数，例如设置宝藏数量或提取宝藏。
     modifier onlyOwner() {
         require(msg.sender == owner,"Access denied : Only the owner can perform this action.");
@@ -52,7 +52,7 @@ contract AdminOnly {
         
         hasWithdrawn[msg.sender] = true;//标记调用者已经提取过
         //为何不是treasureAmount -= amount;？因为管理员批准的提取额度可能大于用户实际提取的数量，所以应该从宝藏中扣除实际提取的数量，而不是批准的额度。
-        treasureAmount -= allowance;//从宝藏中扣除提取的数量
+        treasureAmount -= amount;//从宝藏中扣除提取的数量
         withdrawalAllowance[msg.sender] = 0;//将调用者的提取额度设为0
 
     }
