@@ -17,7 +17,7 @@ contract Calculator{
         _;}
 
     function setscientificCalculator(address _address) public onlyOwner{
-        setscientificCalculatorAddress= _address;
+        scientificCalculatorAddress= _address;
 
     }
 
