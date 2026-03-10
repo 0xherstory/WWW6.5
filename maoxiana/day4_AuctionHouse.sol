@@ -23,7 +23,7 @@ contract AuctionHouse {
         require(block.timestamp < auctionEndTime,"Auction has already ended"); //检查拍卖是否结束
         require(amount > 0,"Bid amount must be greater than zero."); //检查出价金额是否大于0
         //这里会不会有问题，是和当前最高出价比较，还是和自己之前的出价比较？只是大于自己之前出价也可以比吗？
-        require(amount > bids[msg.sender],"New bid must be higher than your current bid."); //检查新出价是否高于当前出价
+        require(amount > highestBid,"Bid too low."); //检查新出价是否高
 
         if (bids[msg.sender] == 0) {
             bidders.push(msg.sender); //如果是新出价者，记录其地址
@@ -44,6 +44,7 @@ contract AuctionHouse {
     function endAuction() external {
         require(block.timestamp >= auctionEndTime,"Auction hasn't ended yet."); //检查拍卖是否结束
         require(!ended,"Auction end already called."); //检查拍卖是否已经结束")
+        require(msg.sender == owner,"Only the auction owner can end the auction."); //检查调用者是否是拍卖行老板
 
         ended = true; //标记拍卖结束
         
