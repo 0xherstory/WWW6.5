@@ -133,10 +133,38 @@ contract Calculator {
 
 5. 函数选择器
     bytes4 selector = bytes4(keccak256("power(uint256,uint256)"));
+<<<<<<< HEAD
+    // 结果: 0x617ec7e4； 实际是函数签名的哈希值的前4字节，用于标识函数。
+
+    // 或者使用编译器提供了更简洁的方式获取函数选择器：
+    bytes4 selector = ScientificCalculator.power.selector;
+
+    // 通过函数选择器进行低级调用
+    (bool success, bytes memory data) = calculatorAddress.call(
+        abi.encodeWithSelector(selector, 2, 10)
+    );
+
+    几种常用用法：
+    1. 使用函数签名
+    // 你写：我要调用transfer函数
+    abi.encodeWithSignature("transfer(address,uint256)", to, amount)
+    // Solidity自动翻译成：暗号(0xa9059cbb) + 参数
+
+    2. 使用函数选择器
+    bytes4 selector = bytes4(keccak256("transfer(address,uint256)"));
+    abi.encodeWithSelector(selector, to, amount)
+    // Solidity自动翻译成：暗号(0xa9059cbb) + 参数
+
+    // 3. 获取函数选择器的更简洁方式
+    bytes4 selector = ERC20.transfer.selector;
+
+
+=======
     // 结果: 0x617ec7e4
 
     // 或者使用
     bytes4 selector = ScientificCalculator.power.selector;
 
+>>>>>>> upstream/master
 todo: 如何添加事件记录
  */
