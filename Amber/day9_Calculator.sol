@@ -5,7 +5,7 @@ pragma solidity ^0.8.0;
 import "./day9_ScientificCalculator.sol";
 
 // 主计算器合约
-contract Calculator{
+contract day9_Calculator {
 
     // 合约拥有者
     address public owner;
