@@ -45,3 +45,7 @@ contract AuctionHouse {//开始定义这个智能合约了
         return (highestBidder, highestBid);
     }
 }
+
+
+
+
