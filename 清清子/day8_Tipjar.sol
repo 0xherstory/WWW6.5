@@ -49,7 +49,11 @@ contract TipJar {
         //If you ever want to show human-readable ETH in your frontend, divide the result by 10^18 :
     }
     
+<<<<<<< HEAD
     // 直接设置小费
+=======
+    // Send a tip in ETH directly
+>>>>>>> f4eb692 (day8_TipJar)
     function tipInEth() public payable {
         require(msg.value > 0, "Tip amount must be greater than 0");
         tipPerPerson[msg.sender] += msg.value;
