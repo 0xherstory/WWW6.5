@@ -60,7 +60,7 @@ contract TipJar {
         totalTipsReceived += msg.value;
         tipsPerCurrency["ETH"] += msg.value;
     }
-    
+    //给 ETH 以外的东西打赏。
     function tipInCurrency(string memory _currencyCode, uint256 _amount) public payable {
         require(conversionRates[_currencyCode] > 0, "Currency not supported");
         require(_amount > 0, "Amount must be greater than 0");
