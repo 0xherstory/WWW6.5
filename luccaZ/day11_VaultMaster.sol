@@ -1,8 +1,8 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
-//import "./day11_Ownable.sol";
+//import "@openzeppelin/contracts/access/Ownable.sol";
+import "./day11_Ownable.sol";
 
 contract VaultMaster is Ownable{
     //VaultMaster inherirent Ownable's function & variable & modifier
@@ -10,7 +10,7 @@ contract VaultMaster is Ownable{
     event WithdrawSuccessful(address indexed recipient, uint256 value);
 
     //set deployer as owner using OpenZeppelin's constructor
-    constructor() Ownable(msg.sender){}
+    //constructor() Ownable(msg.sender){}
 
     function getBalance() public view returns (uint256) {
         return address(this).balance;
