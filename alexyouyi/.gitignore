@@ -1,0 +1,16 @@
+#
+# Ignore all files by default, except Solidity source files and this .gitignore.
+#
+
+# Ignore everything
+*
+
+# But keep directories so we can see their contents
+!*/
+
+# Keep Solidity source files
+!*.sol
+
+# Keep this ignore file
+!.gitignore
+
