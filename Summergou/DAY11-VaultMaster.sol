@@ -2,35 +2,34 @@
 
 pragma solidity ^0.8.20;
 
-// 导入自定义的合约
-import "./Day11-Ownable.sol";
+//导入Ownable合约
+import "./day11_Ownable.sol";
 
-
-// 让用户存入ETH的金库，但只允许所有者可以提取资金
-// "VaultMaster 继承自 Ownable。"——VaultMaster 现在自动拥有 Ownable 的所有函数、变量和修饰符。
 contract VaultMaster is Ownable{
+    //继承Ownable合约
 
-
-    event DepositSuccessful(address indexed account, uint256 value);     // 存钱成功，记录存钱账户和数额
-    event WithdrawSuccessful(address indexed reciepient, uint256 value); // 取钱成功，记录取钱账户和数额
+    //定义事件 又是index
+    event DepositSuccessful(address indexed account, uint256 value);
+    event WithdrawSuccessful(address indexed reciepient, uint256 value);
     
-    // 返回合约当前持有的ETH数量
+
+    //查看余额
     function getBalance()public view returns(uint256){
         return address(this).balance;
     }
 
-    // 允许任何人向合约存入（发送） ETH
+    //存款
     function deposit()public payable{
         require(msg.value >0, "Enter a valid amount");
         emit DepositSuccessful(msg.sender, msg.value);
     }
 
-    // 只允许合约所有者从合约中提取ETH转账到另一个账户
     function withdraw(address _to, uint256 _amount) public onlyOwner {
         require(_amount <= getBalance(), "Insufficient balance");
-        (bool success , ) = payable(_to).call{value: _amount}(""); // 将指定数量发送到给定地址
+        //又是这个语法
+        (bool success , ) = payable(_to).call{value: _amount}("");
         require(success, "Transfer Failed");
-        emit WithdrawSuccessful(_to, _amount); // 如果转账成功，我们发出 WithdrawSuccessful 事件来记录该操作。
+        emit WithdrawSuccessful(_to, _amount);
         
     }
 
