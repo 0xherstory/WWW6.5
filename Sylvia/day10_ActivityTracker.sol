@@ -125,3 +125,4 @@ contract SimpleFitnessTracker {
     function getUserWorkoutCount() public view onlyRegistered returns (uint256) {
         return workoutHistory[msg.sender].length;
     }
+}
