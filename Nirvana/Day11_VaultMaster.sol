@@ -2,9 +2,9 @@
 
 pragma solidity ^0.8.20;
 
-import "./Ownable.sol";
+import "./Day11_Ownable.sol";
 
-contract VaulMaster is Ownable {
+contract VaulMaster is Day11_Ownable {
 
     event DepositSuccessful(address indexed account, uint256 value);
     event WithdrawSuccessful(address indexed recipient, uint256 value);
