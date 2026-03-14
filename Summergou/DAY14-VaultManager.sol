@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "./day14 - IDepositBox.sol";
-import "./day14 - BasicDepositBox.sol";
-import "./day14 - PremiumDepositBox.sol";
-import "./day14 - TimeLockedDepositBox.sol";
+import "./DAY14-IDepositBox.sol";
+import "./DAY14-BasicDepositBox.sol";
+import "./DAY14-PremiumDepositBox.sol";
+import "./DAY14-TimeLockedDepositBox.sol";
 
 contract VaultManager {
     mapping(address => address[]) private userDepositBoxes;
