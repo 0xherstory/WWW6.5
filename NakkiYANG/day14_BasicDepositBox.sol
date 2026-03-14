@@ -1,11 +1,8 @@
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+// SPDX-License-Identifier: MITpragma solidity ^0.8.0;
 
 import "./day14_BaseDepositBox.sol";
 
 contract BasicDepositBox is BaseDepositBox {
-    constructor(string memory _metadata) BaseDepositBox(_metadata) {}
-    
     function getBoxType() external pure override returns (string memory) {
         return "Basic";
     }
