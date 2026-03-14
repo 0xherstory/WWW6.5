@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import{contract Calculator}from "day9-ScientificCalculator.sol";
+import "./day9-ScientificCalculator.sol";
 
 contract Calculator{
 
