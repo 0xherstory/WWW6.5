@@ -5,8 +5,8 @@ pragma solidity ^0.8.0;
 contract SimpleFitnessTracker {
     address public owner; //合约部署人
     
-    // User profile struct
-    struct UserProfile {
+    
+    struct UserProfile { //be like 信息包 把多个相关数据打包在一起
         string name;
         uint256 weight; 
         bool isRegistered;
@@ -16,8 +16,8 @@ contract SimpleFitnessTracker {
     
     struct WorkoutActivity {
         string activityType; 
-        uint256 duration;    // in seconds
-        uint256 distance;    // in meters
+        uint256 duration;    // seconds
+        uint256 distance;    // meters
         uint256 timestamp;   
 
     }
@@ -32,7 +32,7 @@ contract SimpleFitnessTracker {
 
     mapping(address => uint256) public totalDistance;
     
-    
+    //event 区块链上的通知消息日志记录
     event UserRegistered(address indexed userAddress, string name, uint256 timestamp); //事件触发 用户注册
     event ProfileUpdated(address indexed userAddress, uint256 newWeight, uint256 timestamp);//事件触发 体重更新
     event WorkoutLogged( //事件触发 workout数据记录
@@ -65,7 +65,7 @@ contract SimpleFitnessTracker {
             isRegistered: true
         });
         
-        // 触发用户注册成功事件
+        // 触发用户注册成功事件 把这条消息广播出去
         emit UserRegistered(msg.sender, _name, block.timestamp);
     }
     
