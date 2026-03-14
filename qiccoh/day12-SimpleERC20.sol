@@ -16,7 +16,7 @@ event Transfer(address indexed from, address indexed to, uint256 value);
 // 授权另一个地址代表他们花费代币?事件是自定义的吗?还是预定义?
 event Approval(address indexed owner, address indexed spender, uint256 value);
 
-// 造钱
+// 造钱--->构造参数含参数,子类调用需要改!!
 constructor(uint256 _initialSupply) {
     // _initialSupply * 10^18 = 初始代币
     totalSupply = _initialSupply * (10 ** uint256(decimals));
@@ -26,7 +26,8 @@ constructor(uint256 _initialSupply) {
     emit Transfer(address(0), msg.sender, totalSupply);
 }
 // 允许用户将他们的代币发送到另一个地址
-function transfer(address _to, uint256 _value) public returns (bool) {
+// 父合约virtual 的标记代表这个函数是可以被重新修改
+function transfer(address _to, uint256 _value) public virtual returns (bool) {
     // 发送者（msg.sender）
     require(balanceOf[msg.sender] >= _value, "Not enough balance");
     // 代币转移
@@ -43,7 +44,7 @@ function _transfer(address _from, address _to, uint256 _value) internal {
     emit Transfer(_from, _to, _value);
 }
 
-function transferFrom(address _from, address _to, uint256 _value) public returns (bool) {
+function transferFrom(address _from, address _to, uint256 _value) public virtual returns (bool) {
     require(balanceOf[_from] >= _value, "Not enough balance");
     require(allowance[_from][msg.sender] >= _value, "Allowance too low");
 

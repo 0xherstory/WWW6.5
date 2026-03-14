@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.0;
 
-import "./day12-SimpleToken.sol";
+import "./day12-SimpleERC20.sol";
 
 contract PreOrderToken is SimpleERC20 {
 

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./IDepositBox.sol";
+import "./day14-IDepositBox.sol";
 // 核心:特定类型的存款箱——如基础型、高级型和时间锁型
 // abstract is-->抽象合约,接口,其他合约的模板或地基,里面没有把接口里规定的所有功能都写完整
 // 只处理通用逻辑

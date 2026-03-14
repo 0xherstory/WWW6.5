@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./BaseDepositBox.sol";
+import "./day14-BaseDepositBox.sol";
 // 它继承了 BaseDepositBox 的所有内容
 // contract 子合约 is 母合约{} 
 contract BasicDepositBox is BaseDepositBox {
