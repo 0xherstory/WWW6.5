@@ -20,7 +20,7 @@ contract Calculator{
 
     function setScientificCalculator(address _address)public onlyOwner{
         scientificCalculatorAddress = _address;     //注意这个用法
-        }
+    }
 
     function add(uint256 a, uint256 b)public pure returns(uint256){
         uint256 result = a+b;
@@ -51,8 +51,7 @@ contract Calculator{
     uint256 result = scientificCalc.power(base, exponent);
 
     return result;
-
-}
+    }
 
     function calculateSquareRoot(uint256 number)public returns (uint256){
         require(number >= 0 , "Cannot calculate square root of negative nmber");
