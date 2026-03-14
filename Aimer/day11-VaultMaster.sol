@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
-import { Ownable } from "./day10-Ownable.sol";
+import { Ownable } from "./day11-Ownable.sol";
 contract VaultMaster is Ownable{
     event DepositSuccessful(address indexed account, uint256 value);
     event WithdrawSuccessful(address indexed recipient, uint256 value);
