@@ -1,6 +1,7 @@
-// SPDX-License-Identifier: MITpragma solidity ^0.8.0;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
 
-import "./BaseDepositBox.sol";
+import "./day14-BaseDepositBox.sol";
 
 contract TimeLockedDepositBox is BaseDepositBox {
     uint256 private unlockTime;
