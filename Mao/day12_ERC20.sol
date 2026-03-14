@@ -36,7 +36,7 @@ contract SimpleERC20 {
    }
   
    //owner转账
-   function transfer(address _to , uint256 _value) public returns(bool){
+   function transfer(address _to , uint256 _value) virtual public returns(bool){
     require(balances[msg.sender] >= _value, "Insufficient balance");
     _transfer(msg.sender, _to, _value);
     return true;
@@ -53,7 +53,7 @@ contract SimpleERC20 {
    //允许已获批准的人代为转移代币。
    //1. Alice 调用 approve(Bob, 100)
    //2. Bob 调用 transferFrom(Alice, Carol, 50)
-   function transferFrom(address _from, address _to, uint256 _value) public returns(bool){
+   function transferFrom(address _from, address _to, uint256 _value) public virtual returns(bool){
     require(balances[_from] >= _value, "Insufficient balance");
     require(allowances[_from][msg.sender] >= _value, "Insufficient allowance");
     balances[_from] -= _value;
