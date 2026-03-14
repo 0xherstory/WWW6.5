@@ -1,10 +1,9 @@
- 
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
 contract SimpleERC20 {
-    string public name = "Mara Tokem";
-    string public symbol = "MTK";
+    string public name = "Web3 Compass";
+    string public symbol = "COM";
     uint8 public decimals = 18;
     uint256 public totalSupply;
 
@@ -20,7 +19,7 @@ contract SimpleERC20 {
         emit Transfer(address(0), msg.sender, totalSupply);
     }
 
-    function transfer(address _to, uint256 _value) public virtual returns (bool) {
+    function transfer(address _to, uint256 _value) public returns (bool) {
         require(balanceOf[msg.sender] >= _value, "Not enough balance");
         _transfer(msg.sender, _to, _value);
         return true;
@@ -32,7 +31,7 @@ contract SimpleERC20 {
         return true;
     }
 
-    function transferFrom(address _from, address _to, uint256 _value) public virtual returns (bool) {
+    function transferFrom(address _from, address _to, uint256 _value) public returns (bool) {
         require(balanceOf[_from] >= _value, "Not enough balance");
         require(allowance[_from][msg.sender] >= _value, "Allowance too low");
 
@@ -41,7 +40,7 @@ contract SimpleERC20 {
         return true;
     }
 
-    function _transfer(address _from, address _to, uint256 _value) internal virtual {
+    function _transfer(address _from, address _to, uint256 _value) internal {
         require(_to != address(0), "Invalid address");
         balanceOf[_from] -= _value;
         balanceOf[_to] += _value;
