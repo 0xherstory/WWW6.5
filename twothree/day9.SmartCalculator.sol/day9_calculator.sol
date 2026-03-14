@@ -13,7 +13,7 @@ contract Calculator {
         //将合约部署者的地址（msg.sender）赋值给 owner 变量，确定合约所有者 。
         owner = msg.sender;
     }
-    
+    //修改文件名
     //定义了一个名为 onlyOwner 的修饰器
     modifier onlyOwner() {
         //要求调用者地址（msg.sender）必须等于合约所有者地址（owner），否则抛出 “Not the owner” 错误。

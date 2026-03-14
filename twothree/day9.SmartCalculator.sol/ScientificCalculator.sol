@@ -1,7 +1,6 @@
  // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-
 contract ScientificCalculator {
     //幂运算：base^exponent
     //定义了一个名为 power 的函数，有两个 uint256 类型参数 base 和 exponent，函数是公开的纯函数，返回值类型为 uint256
@@ -15,6 +14,7 @@ contract ScientificCalculator {
         }
         return result;
     }
+    //修改
     //平方根（整数）
     //声明一个 uint256 类型的变量 z，其初始值为 (number + 1) / 2 
     function squareRoot(uint256 number) public pure returns (uint256) {
