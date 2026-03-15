@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-// 【修复点】：引用完美匹配你的文件名
 import "./day14_IDepositBox.sol"; 
 
 abstract contract BaseDepositBox is IDepositBox {
