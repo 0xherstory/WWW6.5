@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./Day14_IDepositBox.sol";
+import "./day14_IDepositBox.sol";
 
 abstract contract BaseDepositBox is IDepositBox {
     address private owner;
@@ -12,16 +12,16 @@ abstract contract BaseDepositBox is IDepositBox {
     event SecretStored(address indexed owner);
 
     modifier onlyOwner() {
-        require(msg.sender == owner, "Not the box owner");
+        require(msg.sender == owner, "Not the box owner 111111111");
         _;
     }
 
-    constructor() {
-        owner = msg.sender;
+    constructor(address _owner) {
+        owner = _owner;
         depositTime = block.timestamp;
     }
 
-    function getOwner() public view override returns (address) {
+    function getOwner() public view override returns(address) {
         return owner;
     }
 
@@ -33,14 +33,14 @@ abstract contract BaseDepositBox is IDepositBox {
 
     function storeSecret(string calldata _secret) external virtual override onlyOwner {
         secret = _secret;
-        emit SecretStored(msg.sender);
+        emit SecretStored(owner);
     }
 
-    function getSecret() public view virtual override onlyOwner returns (string memory) {
+    function getSecret() public view virtual override onlyOwner returns(string memory) {
         return secret;
     }
 
-    function getDepositTime() external view virtual override returns (uint256) {
+    function getDepositTime() external view virtual override returns(uint256) {
         return depositTime;
     }
 }
