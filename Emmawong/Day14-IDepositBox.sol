@@ -9,4 +9,4 @@ interface IDepositBox {
     function getSecret() external view returns (string memory);
     function getBoxType() external pure returns (string memory);
     function getDepositTime() external view returns (uint256);
-}
+}//更改后

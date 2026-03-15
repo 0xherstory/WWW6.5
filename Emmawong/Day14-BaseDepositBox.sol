@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+
 pragma solidity ^0.8.0;
 
 import "./Day14-IDepositBox.sol";
@@ -16,10 +17,16 @@ abstract contract BaseDepositBox is IDepositBox {
         _;
     }
 
-    constructor() {
-        owner = msg.sender;
-        depositTime = block.timestamp;
-    }
+   
+    //constructor() {
+        //owner = msg.sender;
+        //depositTime = block.timestamp;
+    //}
+
+    constructor(address initialOwner) {
+    owner = initialOwner;
+    depositTime = block.timestamp;
+}
 
     function getOwner() public view override returns (address) {
         return owner;

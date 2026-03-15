@@ -1,5 +1,6 @@
-// SPDX-License-Identifier: MIT
 
+
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 import "./Day14-BaseDepositBox.sol";
@@ -8,6 +9,10 @@ contract PremiumDepositBox is BaseDepositBox {
     string private metadata;
 
     event MetadataUpdated(address indexed owner);
+
+    constructor(address initialOwner)
+        BaseDepositBox(initialOwner)
+    {}
 
     function getBoxType() external pure override returns (string memory) {
         return "Premium";
