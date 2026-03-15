@@ -25,105 +25,56 @@ export const dayConfigs = {
         concepts: ["modifier", "zero_address", "return_statement"]
     },
     6: {
-        title: "Day 6 - 以太坊存钱罐",
-        subtitle: "以太坊存钱罐/EtherPiggyBank",
+        title: "Day 6 - 以太坊银行",
+        subtitle: "以太坊银行/EtherPiggyBank",
         concepts: ["address_mapping_balance", "payable", "msg_value", "wei_unit", "ether_deposit_withdraw"]
     },
     7: {
         title: "Day 7 - 朋友借条",
         subtitle: "朋友借条/SimpleIOU",
         concepts: ["nested_mapping", "address_payable", "debt_tracking", "internal_transfer", "transfer_method", "call_method", "withdraw_pattern"]
-    }
-};
-
-export const initialDayProgress = {
-    1: {
-        unlockedConcepts: [],
-        totalConcepts: 4,
-        interactionCount: 0
     },
-    2: {
-        unlockedConcepts: [],
-        totalConcepts: 6,
-        interactionCount: 0
+    8: {
+        title: "Day 8 - 打赏罐",
+        subtitle: "打赏罐/TipJar",
+        concepts: ["modifier_onlyOwner", "payable_tip", "msg_value_tip", "address_balance", "call_withdraw", "mapping_rates"]
     },
-    3: {
-        unlockedConcepts: [],
-        totalConcepts: 4,
-        interactionCount: 0
+    9: {
+        title: "Day 9 - 跨合约调用",
+        subtitle: "跨合约调用/InterContract",
+        concepts: ["pure_function", "view_function", "cross_contract_call", "interface_call", "low_level_call", "modifier_onlyOwner", "newton_iteration", "contract_composition"]
     },
-    4: {
-        unlockedConcepts: [],
-        totalConcepts: 7,
-        interactionCount: 0
+    10: {
+        title: "Day 10 - 健身追踪器",
+        subtitle: "健身追踪器/ActivityTracker",
+        concepts: ["struct_definition", "array_in_mapping", "multiple_mappings", "storage_keyword", "event_logging", "milestone_detection", "timestamp_usage", "onlyRegistered_modifier"]
     },
-    5: {
-        unlockedConcepts: [],
-        totalConcepts: 3,
-        interactionCount: 0
+    11: {
+        title: "Day 11 - 主密钥保险库",
+        subtitle: "合约继承与所有权/MasterkeyVault",
+        concepts: [
+            "inheritance",
+            "import_statement",
+            "constructor",
+            "private_visibility",
+            "event_logging",
+            "indexed_parameter",
+            "transfer_ownership",
+            "onlyOwner_modifier"
+        ]
     },
-    6: {
-        unlockedConcepts: [],
-        totalConcepts: 5,
-        interactionCount: 0
-    },
-    7: {
-        unlockedConcepts: [],
-        totalConcepts: 7,
-        interactionCount: 0
-    }
-};
-
-export const initialContracts = {
-    day1: {
-        count: 0,
-        interactionCount: 0
-    },
-    day2: {
-        name: "",
-        bio: "",
-        interactionCount: 0,
-        hasStored: false,
-        hasRetrieved: false
-    },
-    day3: {
-        candidates: [],
-        voteCount: {},
-        interactionCount: 0
-    },
-    day4: {
-        owner: "",
-        item: "",
-        auctionEndTime: 0,
-        highestBidder: "",
-        highestBid: 0,
-        ended: false,
-        bids: {},
-        bidders: [],
-        interactionCount: 0
-    },
-    day5: {
-        owner: "",
-        treasureAmount: 0,
-        withdrawalAllowance: {},
-        hasWithdrawn: {},
-        interactionCount: 0
-    },
-    day6: {
-        bankManager: "",
-        members: [],
-        registeredMembers: {},
-        balance: {},
-        interactionCount: 0
-    },
-    day7: {
-        owner: "",
-        userAddress: "",
-        registeredFriends: {},
-        friendList: [],
-        balances: {},
-        debts: {}, // debtor -> creditor -> amount
-        interactionCount: 0
+    12: {
+        title: "Day 12 - ERC20 代币标准",
+        subtitle: "ERC20代币/Web3Compass",
+        concepts: [
+            "erc20_standard",
+            "mapping_nested",
+            "event",
+            "transfer",
+            "approve",
+            "allowance",
+            "transferFrom"
+        ]
     }
 };
 
@@ -743,6 +694,537 @@ contract SimpleIOU{
     function checkBalance() public view onlyRegistered returns (uint256) {
         // 返回调用者的余额
         return balances[msg.sender];
+    }
+}`;
+    } else if (day === 8) {
+        return `//SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract TipJar {
+    // 合约的拥有者（管理员）地址
+    address public owner;
+    
+    // 记录收到的打赏总金额
+    uint256 public totalTipsReceived;
+    
+    // 汇率映射表：记录法币（如USD）到ETH的汇率
+    mapping(string => uint256) public conversionRates;
+
+    // 记录每个地址（人）打赏的金额
+    mapping(address => uint256) public tipPerPerson;
+    
+    // 当前支持的代币/货币列表
+    string[] public supportedCurrencies;
+    
+    // 记录每种货币收到的打赏总数
+    mapping(string => uint256) public tipsPerCurrency;
+    
+    // 构造函数：初始化所有者和预设汇率
+    constructor() {
+        owner = msg.sender;
+        addCurrency("USD", 5 * 10**14);  // 1 USD = 0.0005 ETH
+        addCurrency("EUR", 6 * 10**14);
+        addCurrency("JPY", 4 * 10**12);
+        addCurrency("INR", 7 * 10**12);
+    }
+    
+    // 自定义修饰符：限制只有管理员才能使用
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only owner can perform this action");
+        _;
+    }
+    
+    // 增加或更新支持的币种以及对等汇率
+    function addCurrency(string memory _currencyCode, uint256 _rateToEth) public onlyOwner {
+        require(_rateToEth > 0, "Conversion rate must be greater than 0");
+        bool currencyExists = false;
+        for (uint i = 0; i < supportedCurrencies.length; i++) {
+            if (keccak256(bytes(supportedCurrencies[i])) == keccak256(bytes(_currencyCode))) {
+                currencyExists = true;
+                break;
+            }
+        }
+        if (!currencyExists) {
+            supportedCurrencies.push(_currencyCode);
+        }
+        conversionRates[_currencyCode] = _rateToEth;
+    }
+    
+    // 核心换算模块：计算法币金额对应的 ETH (wei)
+    function convertToEth(string memory _currencyCode, uint256 _amount) public view returns (uint256) {
+        require(conversionRates[_currencyCode] > 0, "Currency not supported");
+        return _amount * conversionRates[_currencyCode];
+    }
+    
+    // 直接发送 ETH 打赏
+    function tipInEth() public payable {
+        require(msg.value > 0, "Tip amount must be greater than 0");
+        tipPerPerson[msg.sender] += msg.value;
+        totalTipsReceived += msg.value;
+        tipsPerCurrency["ETH"] += msg.value;
+    }
+    
+    // 指定货法币进行打赏
+    function tipInCurrency(string memory _currencyCode, uint256 _amount) public payable {
+        require(conversionRates[_currencyCode] > 0, "Currency not supported");
+        require(_amount > 0, "Amount must be greater than 0");
+        
+        uint256 ethAmount = convertToEth(_currencyCode, _amount);
+        require(msg.value == ethAmount, "Sent ETH doesn't match the converted amount");
+        
+        tipPerPerson[msg.sender] += msg.value;
+        totalTipsReceived += msg.value;
+        tipsPerCurrency[_currencyCode] += _amount;
+    }
+
+    // 提现函数：管理员提取合约内的全部资金
+    function withdrawTips() public onlyOwner {
+        uint256 contractBalance = address(this).balance;
+        require(contractBalance > 0, "No tips to withdraw");
+        
+        (bool success, ) = payable(owner).call{value: contractBalance}("");
+        require(success, "Transfer failed");
+        
+        totalTipsReceived = 0;
+    }
+  
+    // 权限转移
+    function transferOwnership(address _newOwner) public onlyOwner {
+        require(_newOwner != address(0), "Invalid address");
+        owner = _newOwner;
+    }
+
+    function getSupportedCurrencies() public view returns (string[] memory) {
+        return supportedCurrencies;
+    }
+
+    function getContractBalance() public view returns (uint256) {
+        return address(this).balance;
+    }
+}`;
+    } else if (day === 9) {
+        return `// ==================== 文件 1: day9-Calculator.sol ====================
+
+//SPDX-License-Identifier: MIT
+
+pragma solidity ^0.8.0;
+
+import "./day9-ScientificCalculator.sol";
+
+contract Calculator{
+
+    address public owner; // 当前合约的创建者
+    address public scientificCalculatorAddress; // 外部高级科学计算器(ScientificCalculator)合约所在的地址
+
+    constructor(){
+        owner = msg.sender; // 赋予创建者这所合约的主人权限
+    }
+
+    // 限定操作者必须是 owner 的修饰符
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only owner can do this action");
+         _;  // 指代原本应用此修改器的接下来的执行流
+    }
+
+    // 让系统知晓高级计算器究竟被部署在哪个地址。只要知道了对方合约的地址，才能对其进行外部通信调用
+    function setScientificCalculator(address _address)public onlyOwner{
+        scientificCalculatorAddress = _address;
+        }
+
+    // 基础的加法，pure的意思是说它是"纯"函数，既不消耗或修改区块链状态，又跟外界毫无联动。这类型的函数不仅执行快速而且不收Gas燃料费(本地查看时)
+    function add(uint256 a, uint256 b)public pure returns(uint256){
+        uint256 result = a+b;
+        return result;
+    }
+
+    function subtract(uint256 a, uint256 b)public pure returns(uint256){
+        uint256 result = a-b;
+        return result;
+    }
+
+    function multiply(uint256 a, uint256 b)public pure returns(uint256){
+        uint256 result = a*b;
+        return result;
+    }
+
+    function divide(uint256 a, uint256 b)public pure returns(uint256){
+        require(b!= 0, "Cannot divide by zero");
+        uint256 result = a/b;
+        return result;
+    }
+
+    // 计算指数功能：这是一个高级计算功能所以我们利用跨合约互调。这体现了区块链合约的组合式应用（所谓乐高积木）
+    function calculatePower(uint256 base, uint256 exponent)public view returns(uint256){
+
+    // 方法一（常规方法）：将外部合约视作对象进行实例对象的创建，然后按接口标准来调用
+    ScientificCalculator scientificCalc = ScientificCalculator(scientificCalculatorAddress);
+
+    // external call （对外发起合约调用）
+    // 当前合约（Calculator）在背后会去请求被指定地址的（ScientificCalculator）完成这项计算
+    uint256 result = scientificCalc.power(base, exponent);
+
+    return result;
+
+}
+
+    // 获取平方运算的操作：这里演示了另外一种更基层的跨合约联调操作手段：底层 call 方法
+    function calculateSquareRoot(uint256 number)public returns (uint256){
+        require(number >= 0 , "Cannot calculate square root of negative nmber");
+
+        // 使用 abi.encodeWithSignature 来明确编码函数名称和附带的具体传参变量
+        // 这个生成的16进制短字符数据就是待发送请求的方法执行代号，(注意函数的签名内不准出现空格：squareRoot(int256))
+        bytes memory data = abi.encodeWithSignature("squareRoot(int256)", number);
+        
+        // 对另外一个以太坊地址使用底层的 .call() 将参数打入进去尝试引动相应的执行功能
+        // .call() 会始终返还两个值：调用情况的状态(布尔) 和如果它顺利返回带出的数据字节(returnData)
+        (bool success, bytes memory returnData) = scientificCalculatorAddress.call(data);
+        require(success, "External call failed"); // 安全编程习惯之一，处理它底层执行没有回弹失败并致使出错的情况
+        
+        // 最后通过利用 abi.decode 把取回的一串原始数据（returnData）解密成我们需要能阅读懂的具体数字 (uint256类型)
+        uint256 result = abi.decode(returnData, (uint256));
+        return result;
+    }
+
+    
+}
+
+
+// ==================== 文件 2: day9-ScientificCalculator.sol ====================
+
+//SPDX-License-Identifier: MIT
+
+pragma solidity ^0.8.0;
+
+contract ScientificCalculator{
+
+    // 求基数(base) 的给定指次数 (exponent) 的结果。pure同样表明只是本地的简单输出纯逻辑计算。
+    function power(uint256 base, uint256 exponent)public pure returns(uint256){
+        if(exponent == 0)return 1; // 零次方均为 1
+        else return (base ** exponent); // '**' 在Solidity等价于指数的意思
+    }
+
+    // 以牛顿法逼近求取输入数的平方根 （Solidity 因为不具备浮点数运算支持这使这种开箱式求近似正变得常用）
+    function squareRoot(int256 number)public pure returns(int256){
+        require(number >= 0, "Cannot calculate square root of negative number"); // 数学要求被开方根必须不是负的
+        if(number == 0)return 0;
+
+        int256 result = number/2; // 原始预估近似值
+        // 为保证它不仅消耗光所有的手续费且死锁(Gas exhausted), 人为限制让逼近只能进行 10 轮
+        // 虽然轮次限制代表得不到精确数字，但足够反映逼近的过程
+        for(uint256 i = 0; i<10; i++){
+            result = (result + number / result)/2; // 牛顿迭代法的基础公约公式
+        }
+
+        return result; // 反馈出求取之后的收敛值
+    }
+}`;
+    } else if (day === 10) {
+        return `//SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract ActivityTracker {
+    // 合约所有者地址，用于权限管理
+    address public owner;
+    
+    // 用户资料结构体：存储用户的基本信息
+    struct UserProfile {
+        string name;        // 用户姓名
+        uint256 weight;     // 用户体重
+        bool isRegistered;  // 是否已注册标记
+    }
+    
+    // 运动活动结构体：存储单次运动的详细信息
+    struct WorkoutActivity {
+        string activityType; // 运动类型（如：跑步、游泳、骑行等）
+        uint256 duration;    // in seconds / 运动时长（单位：秒）
+        uint256 distance;    // in meters / 运动距离（单位：米）
+        uint256 timestamp;   // 运动记录时间戳
+    }
+    
+    // 用户地址 => 用户资料的映射，用于存储每个注册用户的基本信息
+    mapping(address => UserProfile) public userProfiles;
+    
+    // 用户地址 => 运动历史数组的映射，存储每个用户的所有运动记录
+    mapping(address => WorkoutActivity[]) private workoutHistory;
+    
+    // 用户地址 => 总运动次数的映射
+    mapping(address => uint256) public totalWorkouts;
+    
+    // 用户地址 => 总运动距离的映射
+    mapping(address => uint256) public totalDistance;
+    
+    // 事件定义：用于记录重要的合约操作，方便前端监听和日志查询
+    event UserRegistered(address indexed userAddress, string name, uint256 timestamp);
+    event ProfileUpdated(address indexed userAddress, uint256 newWeight, uint256 timestamp);
+    event WorkoutLogged(
+        address indexed userAddress, 
+        string activityType, 
+        uint256 duration, 
+        uint256 distance, 
+        uint256 timestamp
+    );
+    event MilestoneAchieved(address indexed userAddress, string milestone, uint256 timestamp);
+    
+    // 构造函数：在合约部署时执行，设置合约部署者为所有者
+    constructor() {
+        owner = msg.sender;
+    }
+    
+    // 仅限已注册用户修饰器：确保调用函数的用户已经完成注册
+    modifier onlyRegistered() {
+        require(userProfiles[msg.sender].isRegistered, "User not registered");
+        _;
+    }
+    
+    // 用户注册函数：允许新用户注册到系统中
+    function registerUser(string memory _name, uint256 _weight) public {
+        // 检查用户是否已注册，防止重复注册
+        require(!userProfiles[msg.sender].isRegistered, "User already registered");
+        
+        // 创建新的用户资料并存储
+        userProfiles[msg.sender] = UserProfile({
+            name: _name,
+            weight: _weight,
+            isRegistered: true
+        });
+        
+        // 触发用户注册事件
+        emit UserRegistered(msg.sender, _name, block.timestamp);
+    }
+    
+    // 更新体重函数：允许已注册用户更新体重，并检测是否达成减重目标
+    function updateWeight(uint256 _newWeight) public onlyRegistered {
+        // 使用storage关键字获取存储引用，直接修改原数据
+        UserProfile storage profile = userProfiles[msg.sender];
+        
+        // 检查是否达成显著减重目标（减重5%或以上）
+        if (_newWeight < profile.weight && (profile.weight - _newWeight) * 100 / profile.weight >= 5) {
+            emit MilestoneAchieved(msg.sender, "Weight Goal Reached", block.timestamp);
+        }
+        
+        // 更新体重
+        profile.weight = _newWeight;
+        
+        // 触发资料更新事件
+        emit ProfileUpdated(msg.sender, _newWeight, block.timestamp);
+    }
+    
+    // 记录运动函数：允许已注册用户记录新的运动活动
+    function logWorkout(
+        string memory _activityType,
+        uint256 _duration,
+        uint256 _distance
+    ) public onlyRegistered {
+        // 创建新的运动活动记录
+        WorkoutActivity memory newWorkout = WorkoutActivity({
+            activityType: _activityType,
+            duration: _duration,
+            distance: _distance,
+            timestamp: block.timestamp
+        });
+        
+        // 将新记录添加到用户的运动历史中
+        workoutHistory[msg.sender].push(newWorkout);
+        
+        // 更新用户的统计数据
+        totalWorkouts[msg.sender]++;
+        totalDistance[msg.sender] += _distance;
+        
+        // 触发运动记录事件
+        emit WorkoutLogged(
+            msg.sender,
+            _activityType,
+            _duration,
+            _distance,
+            block.timestamp
+        );
+        
+        // 检查运动次数里程碑（10次、50次）
+        if (totalWorkouts[msg.sender] == 10) {
+            emit MilestoneAchieved(msg.sender, "10 Workouts Completed", block.timestamp);
+        } else if (totalWorkouts[msg.sender] == 50) {
+            emit MilestoneAchieved(msg.sender, "50 Workouts Completed", block.timestamp);
+        }
+        
+        // 检查距离里程碑（100公里 = 100000米）
+        if (totalDistance[msg.sender] >= 100000 && totalDistance[msg.sender] - _distance < 100000) {
+            emit MilestoneAchieved(msg.sender, "100K Total Distance", block.timestamp);
+        }
+    }
+    
+    // 获取用户运动次数函数：返回当前登录用户的运动记录数量
+    function getUserWorkoutCount() public view onlyRegistered returns (uint256) {
+        return workoutHistory[msg.sender].length;
+    }
+}`;
+    } else if (day === 11) {
+        return `// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+// ==================== 父合约：Ownable.sol ====================
+// 基础所有权管理合约，可被其他合约继承复用
+
+contract Ownable {
+    // private 可见性：只能在当前合约内部访问
+    address private owner;
+    
+    // 构造函数：合约部署时执行一次，初始化所有者
+    constructor() {
+        owner = msg.sender;
+    }
+    
+    // 事件日志：indexed 参数可以被过滤查询
+    event OwnershipTransferred(
+        address indexed previousOwner,  // indexed 允许按地址搜索事件
+        address indexed newOwner
+    );
+    
+    // 修饰符：限制只有所有者才能调用某些函数
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only owner can perform this action");
+        _;  // 继续执行被修饰的函数
+    }
+    
+    // 查看当前所有者
+    function ownerAddress() public view returns (address) {
+        return owner;
+    }
+    
+    // 转移所有权（只有所有者可以调用）
+    function transferOwnership(address newOwner) public onlyOwner {
+        require(newOwner != address(0), "Invalid address: cannot be zero address");
+        address oldOwner = owner;
+        owner = newOwner;
+        emit OwnershipTransferred(oldOwner, newOwner);
+    }
+}
+
+// ==================== 子合约：VaultMaster.sol ====================
+// 资金保险库合约，继承 Ownable 的所有权管理功能
+
+import "./Ownable.sol";
+
+contract VaultMaster is Ownable {
+    // 合约余额（实际上使用 address(this).balance）
+    
+    // 事件：记录成功的存款
+    event DepositSuccessful(
+        address indexed depositor,
+        uint256 amount,
+        uint256 timestamp
+    );
+    
+    // 事件：记录成功的提款
+    event WithdrawSuccessful(
+        address indexed recipient,
+        uint256 amount,
+        uint256 timestamp
+    );
+    
+    // 存款函数：任何人都可以存入 ETH
+    function deposit() public payable {
+        require(msg.value > 0, "Must send ETH to deposit");
+        emit DepositSuccessful(msg.sender, msg.value, block.timestamp);
+    }
+    
+    // 提款函数：只有所有者可以提取（继承的 onlyOwner 修饰符）
+    function withdraw(address payable recipient, uint256 amount) public onlyOwner {
+        require(recipient != address(0), "Invalid recipient address");
+        require(amount > 0, "Amount must be greater than 0");
+        require(address(this).balance >= amount, "Insufficient contract balance");
+        
+        // 转账到指定地址
+        (bool success, ) = recipient.call{value: amount}("");
+        require(success, "Transfer failed");
+        
+        emit WithdrawSuccessful(recipient, amount, block.timestamp);
+    }
+    
+    // 查询合约余额
+    function getBalance() public view returns (uint256) {
+        return address(this).balance;
+    }
+}`;
+    } else if (day === 12) {
+        return `// SPDX-License-Identifier: MIT
+// SPDX许可证标识符，指定代码使用MIT开源许可证
+pragma solidity ^0.8.20;
+// 指定Solidity编译器版本为0.8.20及以上，但小于0.9.0
+
+// 简化版ERC20代币合约：ERC20是以太坊上最常用的代币标准，功能包括转账、授权、查询余额等
+contract SimpleERC20 {
+    // 代币基本信息
+    string public name = "Web3 Compass";  // 代币全称
+    string public symbol = "COM";          // 代币符号（交易时使用）
+    uint8 public decimals = 18;            // 小数位数（18是标准值，1代币 = 10^18最小单位）
+    uint256 public totalSupply;            // 代币总供应量
+
+    // 余额映射：记录每个地址持有的代币数量，address => uint256: 地址 => 余额
+    mapping(address => uint256) public balanceOf;
+    // 授权额度映射（双重映射）：记录每个地址授权给其他地址可以使用的代币数量
+    // address => address => uint256: 代币持有者 => 被授权者 => 授权额度
+    // 例如：allowance[A][B] = 100 表示A授权B可以使用A的100个代币
+    mapping(address => mapping(address => uint256)) public allowance;
+
+    // 转账事件：当代币从一个地址转移到另一个地址时触发
+    event Transfer(address indexed from, address indexed to, uint256 value);
+    // 授权事件：当代币持有者授权他人使用自己的代币时触发
+    event Approval(address indexed owner, address indexed spender, uint256 value);
+
+    // 构造函数：在合约部署时创建所有代币并分配给部署者
+    // _initialSupply 是用户输入的值（不含小数位）
+    constructor(uint256 _initialSupply) {
+        // 计算实际总供应量：用户输入值 × 10^decimals
+        // 例如：输入1000，decimals为18，则实际创建 1000 * 10^18 个最小单位
+        totalSupply = _initialSupply * (10 ** uint256(decimals));
+        // 将所有代币分配给合约部署者
+        balanceOf[msg.sender] = totalSupply;
+        // 触发转账事件，表示从0地址（代表铸币）转账给部署者
+        emit Transfer(address(0), msg.sender, totalSupply);
+    }
+
+    // 转账函数：调用者将自己的代币转给他人
+    function transfer(address _to, uint256 _value) public returns (bool) {
+        // 检查调用者余额是否足够
+        require(balanceOf[msg.sender] >= _value, "Not enough balance");
+        // 执行转账（内部函数）
+        _transfer(msg.sender, _to, _value);
+        return true;
+    }
+
+    // 授权函数：允许_spender从调用者账户中转走_value数量的代币
+    function approve(address _spender, uint256 _value) public returns (bool) {
+        // 设置授权额度
+        allowance[msg.sender][_spender] = _value;
+        // 触发授权事件
+        emit Approval(msg.sender, _spender, _value);
+        return true;
+    }
+
+    // 代转账函数（从他人账户转账）：调用者使用被授权的额度从_from地址向_to地址转账
+    function transferFrom(address _from, address _to, uint256 _value) public returns (bool) {
+        // 检查_from地址的余额是否足够
+        require(balanceOf[_from] >= _value, "Not enough balance");
+        // 检查调用者被授权的额度是否足够
+        require(allowance[_from][msg.sender] >= _value, "Allowance too low");
+
+        // 减少授权额度（已使用的部分）
+        allowance[_from][msg.sender] -= _value;
+        // 执行转账
+        _transfer(_from, _to, _value);
+        return true;
+    }
+
+    // 内部转账函数：internal修饰符表示只能在合约内部调用，这是实际执行转账逻辑的核心函数
+    function _transfer(address _from, address _to, uint256 _value) internal {
+        // 检查收款地址是否有效（不能是零地址）
+        require(_to != address(0), "Invalid address");
+        // 减少转出地址的余额
+        balanceOf[_from] -= _value;
+        // 增加转入地址的余额
+        balanceOf[_to] += _value;
+        // 触发转账事件
+        emit Transfer(_from, _to, _value);
     }
 }`;
     }
