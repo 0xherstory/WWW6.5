@@ -1,9 +1,10 @@
-// SPDX-License-Identifier: MIT
+//SPDX-License-Identifier: MIT
+
 pragma solidity ^0.8.0;
 
-import "./SimpleERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-contract SimplifiedTokenSale is SimpleERC20 {
+contract PreOrderToken is ERC20 {
     uint256 public tokenPrice;
     uint256 public saleStartTime;
     uint256 public saleEndTime;
@@ -13,94 +14,87 @@ contract SimplifiedTokenSale is SimpleERC20 {
     address public projectOwner;
     bool public finalized = false;
     bool private initialTransferDone = false;
-    
+
     event TokensPurchased(address indexed buyer, uint256 etherAmount, uint256 tokenAmount);
     event SaleFinalized(uint256 totalRaised, uint256 totalTokensSold);
-    
-    constructor(
+
+
+    constructor( 
         uint256 _initialSupply,
         uint256 _tokenPrice,
-        uint256 _saleStartTime,
-        uint256 _saleDuration,
+        uint256 _saleDurationInSeconds,
         uint256 _minPurchase,
-        uint256 _maxPurchase
-    ) SimpleERC20(_initialSupply) {
+        uint256 _maxPurchase,
+        address _projectOwner
+    )ERC20("PreOrderToken", "POT"){
         tokenPrice = _tokenPrice;
-        saleStartTime = _saleStartTime;
-        saleEndTime = _saleStartTime + _saleDuration;
+        saleStartTime = block.timestamp;
+        saleEndTime = block.timestamp + _saleDurationInSeconds;
         minPurchase = _minPurchase;
         maxPurchase = _maxPurchase;
-        projectOwner = msg.sender;
-        
-        // 将所有代币转到合约
-        _transfer(msg.sender, address(this), totalSupply);
+        projectOwner = _projectOwner;
+
+        _mint(msg.sender, _initialSupply);
+    
+
+        _transfer(msg.sender, address(this), totalSupply());
         initialTransferDone = true;
     }
-    
-    // 检查销售是否激活
-    function isSaleActive() public view returns (bool) {
-        return block.timestamp >= saleStartTime && 
-               block.timestamp <= saleEndTime && 
-               !finalized;
+
+    function isSaleActive()public view returns(bool){
+        return(!finalized && block.timestamp >= saleStartTime && block.timestamp <= saleEndTime);
     }
-    
-    // 购买代币
-    function buyTokens() public payable {
-        require(isSaleActive(), "Sale not active");
-        require(msg.value >= minPurchase && msg.value <= maxPurchase, "Invalid purchase amount");
-        
-        uint256 tokenAmount = (msg.value * 10**uint256(decimals)) / tokenPrice;
-        require(balanceOf[address(this)] >= tokenAmount, "Insufficient tokens");
-        
-        _transfer(address(this), msg.sender, tokenAmount);
-        totalRaised += msg.value;
-        
+
+    function buyTokens() public payable{
+        require(isSaleActive(), "Sale is not active");
+        require(msg.value >= minPurchase, "Amount is below min purchase");
+        require(msg.value <= maxPurchase, "Amount is above max purchase");
+        uint256 tokenAmount = (msg.value * 10**decimals())/ tokenPrice;
+        require(balanceOf(address(this)) >= tokenAmount, "Not enough tokens left for sale");
+        totalRaised+= msg.value;
+        _transfer(address(this),msg.sender,tokenAmount);
         emit TokensPurchased(msg.sender, msg.value, tokenAmount);
+        
     }
-    
-    // ✅ 重写transfer - 添加锁定逻辑
-    function transfer(address _to, uint256 _value) public override returns (bool) {
-        if (!finalized && msg.sender != address(this) && initialTransferDone) {
+
+    function transfer(address _to, uint256 _value)public override returns(bool){
+        if(!finalized && msg.sender != address(this) && initialTransferDone){
             require(false, "Tokens are locked until sale is finalized");
         }
+
         return super.transfer(_to, _value);
     }
-    
-    // ✅ 重写transferFrom - 添加锁定逻辑
-    function transferFrom(address _from, address _to, uint256 _value) public override returns (bool) {
-        if (!finalized && _from != address(this) && initialTransferDone) {
+
+    function transferFrom(address _from, address _to, uint256 _value)public override returns(bool){
+        if(!finalized && _from != address(this)){
             require(false, "Tokens are locked until sale is finalized");
         }
         return super.transferFrom(_from, _to, _value);
     }
-    
-    // 完成销售
-    function finalizeSale() public payable {
-        require(msg.sender == projectOwner, "Only owner");
-        require(block.timestamp > saleEndTime, "Sale not ended");
-        require(!finalized, "Already finalized");
-        
+
+    function finalizeSale() public {
+        require(msg.sender == projectOwner, "Only owner can call this function");
+        require(!finalized,"Sale is already finalized");
+        require (block.timestamp > saleEndTime, "Sale not finished yet");
         finalized = true;
-        
-        // 将筹集的ETH转给项目方
-        (bool success, ) = projectOwner.call{value: address(this).balance}("");
+        uint256 tokensSold = totalSupply() - balanceOf(address(this));
+        (bool success,) = projectOwner.call{value:  address(this).balance}("");
         require(success, "Transfer failed");
-        
-        emit SaleFinalized(totalRaised, totalSupply - balanceOf[address(this)]);
+        emit SaleFinalized(totalRaised, tokensSold);
     }
-    
-    // 工具函数
-    function timeRemaining() public view returns (uint256) {
-        if (block.timestamp >= saleEndTime) return 0;
-        return saleEndTime - block.timestamp;
+
+    function timeRemaining() public view  returns(uint256){
+        if(block.timestamp >= saleEndTime){
+            return 0;
+        }
+        return (saleEndTime - block.timestamp);
     }
-    
-    function tokensAvailable() public view returns (uint256) {
-        return balanceOf[address(this)];
+
+    function tokensAvailable()public view returns(uint256){
+        return balanceOf(address(this));
     }
-    
-    // 接收直接发送的ETH
-    receive() external payable {
+
+    receive() external payable{
         buyTokens();
     }
 }
