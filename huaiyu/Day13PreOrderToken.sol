@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 
 pragma solidity ^0.8.0;
-import "./ERC20.sol";
+import "./Day12 ERC20.sol";
 
 //在ERC20里三个代码段落添加了virtual标记告诉solidity继承该合约并且可以修改
 contract PreOrderToken is SimpleER20 {

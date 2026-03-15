@@ -1,9 +1,9 @@
 //SPDX-License-Identifier:MIT
 pragma solidity ^0.8.0;
 
-import"./BaseDepositBox.sol";
+import"./Day14 BaseDepositBox.sol";
 
-contract PremiumDepositBox is BaseDepositBox {
+contract PremiumDepositBox is Day14 BaseDepositBox {
     string private metadata;//metadata被标记为private，表示只有此合约内的函数可以读取或修改它
 
     event MetadataUpdated(address indexed owner);//MeradataUpdated事件

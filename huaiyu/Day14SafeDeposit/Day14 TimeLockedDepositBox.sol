@@ -1,9 +1,9 @@
 //SPDX-License-Identifier:MIT
 pragma solidity ^0.8.0;
 
-import "./BaseDepositBox.sol";
+import "./Day14 BaseDepositBox.sol";
 
-contract TimeLockedDepositBox is BaseDepositBox {
+contract TimeLockedDepositBox is Day14 BaseDepositBox {
     uint256 private unlockTime;
 //lockDuration以秒为单位
     constructor(uint256 lockDuration) {

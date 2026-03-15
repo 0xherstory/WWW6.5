@@ -3,9 +3,9 @@
 //SPDX-License-Identifier:MIT
 pragma solidity ^0.8.0;
 
-import "./BaseDepositBox.sol";
+import "./Day14 BaseDepositBox.sol";
 
-contract BasicDepositBox is BaseDepositBox {
+contract BasicDepositBox is Day14 BaseDepositBox {
     function getBoxType() external pure override returns(string memory){
         return "Basic";
     }
