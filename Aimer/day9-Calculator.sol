@@ -1,9 +1,9 @@
-day9-ScientificCalculator.sol
+
 //SPDX-License-Identifier: MIT
 
 pragma solidity ^0.8.0;
 
-import {ScientificCalculator} from "./day9-ScientificCalculator.sol";
+//import {ScientificCalculator} from "./day9-ScientificCalculator.sol";
 
 contract Calculator{
 
@@ -55,11 +55,11 @@ contract Calculator{
 
 }
 
-    function calculateSquareRoot(uint256 number)public returns (uint256){
+    function calculateSquareRoot(uint256 number)public view returns (uint256){
         require(number >= 0 , "Cannot calculate square root of negative nmber");
 
-        bytes memory data = abi.encodeWithSignature("squareRoot(int256)", number);
-        (bool success, bytes memory returnData) = scientificCalculatorAddress.call(data);
+        bytes memory data = abi.encodeWithSignature("squareRoot(uint256)", number);
+        (bool success, bytes memory returnData) = scientificCalculatorAddress.staticcall(data);
         require(success, "External call failed");
         uint256 result = abi.decode(returnData, (uint256));
         return result;
@@ -74,11 +74,11 @@ contract ScientificCalculator{
         else return (base ** exponent);
     }
 
-    function squareRoot(int256 number)public pure returns(int256){
+    function squareRoot(uint256 number)public pure returns(uint256){
         require(number >= 0, "Cannot calculate square root of negative number");
         if(number == 0)return 0;
 
-        int256 result = number/2;
+        uint256 result = number/2;
         for(uint256 i = 0; i<10; i++){
             result = (result + number / result)/2;
         }
