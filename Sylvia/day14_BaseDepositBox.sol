@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./Day14_IDepositBox.sol";
+import "./day14_IDepositBox.sol";
 
 abstract contract BaseDepositBox is IDepositBox {
     address private owner;
@@ -25,7 +25,7 @@ abstract contract BaseDepositBox is IDepositBox {
         return owner;
     }
 
-    function transferOwnership(address newOwner) external virtual override onlyOwner {
+    function transferOwnership(address newOwner) external virtual  override onlyOwner {
         require(newOwner != address(0), "New owner cannot be zero address");
         emit OwnershipTransferred(owner, newOwner);
         owner = newOwner;
@@ -40,7 +40,7 @@ abstract contract BaseDepositBox is IDepositBox {
         return secret;
     }
 
-    function getDepositTime() external view virtual override returns (uint256) {
+    function getDepositTime() external view virtual  override returns (uint256) {
         return depositTime;
     }
 }

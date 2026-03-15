@@ -1,13 +1,12 @@
 // SPDX-License-Identifier: MIT
-
 pragma solidity ^0.8.0;
 
-import "./Day14_BaseDepositBox.sol";
+import "./day14_BaseDepositBox.sol";
 
 contract TimeLockedDepositBox is BaseDepositBox {
     uint256 private unlockTime;
 
-    constructor(uint256 lockDuration) BaseDepositBox() {
+    constructor(uint256 lockDuration, address _owner) BaseDepositBox(_owner) {
         unlockTime = block.timestamp + lockDuration;
     }
 
@@ -16,20 +15,20 @@ contract TimeLockedDepositBox is BaseDepositBox {
         _;
     }
 
-    function getBoxType() external pure override returns (string memory) {
+    function getBoxType() external pure override returns(string memory) {
         return "TimeLocked";
     }
 
-    function getSecret() public view override onlyOwner timeUnlocked returns (string memory) {
+    function getSecret() public view override onlyOwner timeUnlocked returns(string memory) {
         return super.getSecret();
     }
 
-    function getUnlockTime() external view returns (uint256) {
+    function getUnlockTime() external view returns(uint256) {
         return unlockTime;
     }
 
-    function getRemainingLockTime() external view returns (uint256) {
-        if (block.timestamp >= unlockTime) return 0;
+    function getRemainingLockTime() external view returns(uint256) {
+        if(block.timestamp >= unlockTime) return 0;
         return unlockTime - block.timestamp;
     }
 }
