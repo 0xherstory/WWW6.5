@@ -180,8 +180,10 @@
       "event WithdrawSuccessful(address indexed reciepient, uint256 value)"
     ];
 
+    const METAMASK_DOWNLOAD_URL = "https://metamask.io/download/";
     let provider;
     let signer;
+    let injectedProvider;
     let readContract;
     let writeContract;
     let isListening = false;
@@ -242,6 +244,46 @@
       return contractAddressInput.value.trim();
     }
 
+    function isFileProtocol() {
+      return window.location.protocol === "file:";
+    }
+
+    function getInjectedProvider() {
+      if (window.ethereum?.isMetaMask) return window.ethereum;
+      const providers = window.ethereum?.providers;
+      if (Array.isArray(providers)) {
+        const mm = providers.find((p) => p?.isMetaMask);
+        if (mm) return mm;
+      }
+      return window.ethereum;
+    }
+
+    async function waitForProvider(timeoutMs = 1800) {
+      const readyNow = getInjectedProvider();
+      if (readyNow) return readyNow;
+      return new Promise((resolve) => {
+        let done = false;
+        const tryResolve = () => {
+          if (done) return;
+          const p = getInjectedProvider();
+          if (p) {
+            done = true;
+            window.removeEventListener("ethereum#initialized", tryResolve);
+            resolve(p);
+          }
+        };
+        window.addEventListener("ethereum#initialized", tryResolve, { once: true });
+        const timer = setInterval(tryResolve, 100);
+        setTimeout(() => {
+          clearInterval(timer);
+          if (done) return;
+          done = true;
+          window.removeEventListener("ethereum#initialized", tryResolve);
+          resolve(undefined);
+        }, timeoutMs);
+      });
+    }
+
     function ensureAddress(text, fieldName) {
       if (!ethers.isAddress(text)) {
         throw new Error(`${fieldName} 地址格式不正确`);
@@ -268,10 +310,14 @@
     }
 
     async function connectWallet() {
-      if (!window.ethereum) {
-        throw new Error("未检测到 MetaMask，请先安装浏览器插件");
+      injectedProvider = await waitForProvider();
+      if (!injectedProvider) {
+        const fileHint = isFileProtocol()
+          ? "（你当前是 file:// 打开页面，建议改用 http://localhost 访问）"
+          : "";
+        throw new Error(`未检测到 MetaMask 注入对象${fileHint}。请确认扩展已启用后重启浏览器，或前往 ${METAMASK_DOWNLOAD_URL}`);
       }
-      provider = new ethers.BrowserProvider(window.ethereum);
+      provider = new ethers.BrowserProvider(injectedProvider);
       await provider.send("eth_requestAccounts", []);
       signer = await provider.getSigner();
       await refreshWalletInfo();
@@ -563,19 +609,24 @@
       setStatus("日志已清空");
     });
 
-    if (window.ethereum) {
-      window.ethereum.on("accountsChanged", async () => {
+    const providerForEvents = getInjectedProvider();
+    if (providerForEvents?.on) {
+      providerForEvents.on("accountsChanged", async () => {
         if (!provider) return;
         signer = await provider.getSigner();
         await refreshWalletInfo();
         setStatus("检测到账户切换，请确认是否仍为 owner");
       });
-      window.ethereum.on("chainChanged", () => {
+      providerForEvents.on("chainChanged", () => {
         setStatus("检测到网络切换，请重新初始化合约");
         readContract = undefined;
         writeContract = undefined;
         contractInfo.textContent = "未初始化";
       });
+    }
+
+    if (isFileProtocol()) {
+      setStatus("当前是 file:// 访问，建议改为 http://localhost 以确保钱包注入稳定");
     }
   </script>
 </body>

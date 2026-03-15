@@ -23,7 +23,7 @@ contract SimpleERC20 {
     }
 
     // 个人转账：用户自主发起资金转移 
-    function transfer(address _to, uint256 _value) public returns (bool) {
+    function transfer(address _to, uint256 _value) public virtual returns (bool) {
         require(balanceOf[msg.sender] >= _value, "Not enough balance");
         _transfer(msg.sender, _to, _value);
         return true;
@@ -37,7 +37,7 @@ contract SimpleERC20 {
     }
 
     // 代理转账：受托方在授权范围内划拨资金 
-    function transferFrom(address _from, address _to, uint256 _value) public returns (bool) {
+    function transferFrom(address _from, address _to, uint256 _value) public virtual returns (bool) {
         require(balanceOf[_from] >= _value, "Insufficient balance");
         require(allowance[_from][msg.sender] >= _value, "Allowance too low");
 
