@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.20;
 
-import "./day14 - IDepositBox.sol";
+import "./day14_IDepositBox.sol";
 
 abstract contract BaseDepositBox is IDepositBox {
     address private owner;
