@@ -45,15 +45,15 @@ contract PreorderTokens is SimpleERC20{
         _transfer(address(this),msg.sender,tokenAmount);
         emit TokenPurchased(msg.sender, msg.value,tokenAmount);
     }
-    function transfer(address _to,uint256 _value)public override returns(bool){
-        if(!finalized&&msg.sender!=address(this)&&initialTransferDone){
-            require(false,"Tokens are locked until sale is finailized");
+    function transfer(address _to, uint256 _value) public override returns (bool) {
+        if (!finalized && msg.sender != address(this) && initialTransferDone) {
+            revert("Tokens are locked until sale is finalized");
         }
         return super.transfer(_to, _value);
-    }  
-    function tramsferFrom(address _from, address _to, uint256 _value)public returns (bool){
-        if(!finalized&&_from !=address(this)){
-            require(false, "Tokens are locked until sale is finailized");
+    }
+    function transferFrom(address _from, address _to, uint256 _value) public override returns (bool) {
+        if (!finalized && _from != address(this)) {
+            revert("Tokens are locked until sale is finalized");
         }
         return super.transferFrom(_from, _to, _value);
     }
