@@ -1,5 +1,4 @@
 //SPDX-License-Identifier: MIT
-
 pragma solidity ^0.8.0;
 import "./day12_ERC20.sol";
 
@@ -18,25 +17,25 @@ contract SimplifiedTokenSale is SimpleERC20 {
     event TokensPurchased(address indexed buyer, uint256 etherAmount, uint256 tokenAmount);
     event SaleFinalized(uint256 totalRaised, uint256 totalTokensSold);
 
-    constructor( 
+    constructor(
         uint256 _intitialSupply,
         uint256 _tokenPrice,
         uint256 _saleDurationInSeconds,
         uint256 _minPurchase,
         uint256 _maxPurchase,
         address _projectOwner
-    )MyToken(_intitialSupply){
+    ) SimpleERC20(_intitialSupply){
         tokenPrice = _tokenPrice;
         saleStartTime = block.timestamp;
         saleEndTime = block.timestamp + _saleDurationInSeconds;
         minPurchase = _minPurchase;
         maxPurchase = _maxPurchase;
         projectOwner = _projectOwner;
-    
 
-    _transfer(msg.sender, address(this), totalSupply);
-    initialTransferDone = true;
-}
+        _transfer(msg.sender, address(this), totalSupply);
+        initialTransferDone = true;
+    }
+
     function isSaleActive()public view returns(bool){
         return(!finalized && block.timestamp >= saleStartTime && block.timestamp <= saleEndTime);
     }
@@ -50,7 +49,7 @@ contract SimplifiedTokenSale is SimpleERC20 {
         totalRaised+= msg.value;
         _transfer(address(this),msg.sender,tokenAmount);
         emit TokensPurchased(msg.sender, msg.value, tokenAmount);
-        
+
     }
 
     function transfer(address _to, uint256 _value)public override returns(bool){
@@ -93,4 +92,4 @@ contract SimplifiedTokenSale is SimpleERC20 {
     receive() external payable{
         buyTokens();
     }
-    }
+}
