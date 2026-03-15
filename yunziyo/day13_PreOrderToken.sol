@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: MIT
 
 pragma solidity ^0.8.0;
-import "./day12_ERC20.sol";
+import "./day13_MyToken.sol";
 
 contract PreOrderToken is MyToken {
 
