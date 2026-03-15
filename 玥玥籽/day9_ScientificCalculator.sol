@@ -1,13 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-/**
- * @title ScientificCalculator - 科学计算器
- * @notice 提供高级数学运算功能
- */
 contract ScientificCalculator {
 
-    // 计算幂运算：base^exponent
     function power(uint256 base, uint256 exponent) public pure returns (uint256) {
         if (exponent == 0) {
             return 1;
@@ -21,7 +16,6 @@ contract ScientificCalculator {
         return result;
     }
 
-    // 计算平方根（使用牛顿迭代法）
     function squareRoot(uint256 number) public pure returns (uint256) {
         if (number == 0) {
             return 0;
@@ -31,7 +25,6 @@ contract ScientificCalculator {
             return 1;
         }
 
-        // 牛顿迭代法
         uint256 x = number;
         uint256 y = (x + 1) / 2;
 
