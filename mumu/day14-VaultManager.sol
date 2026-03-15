@@ -16,25 +16,40 @@ contract VaultManager {
 
     // 创建basic box
     function createBasicBox() external returns (address) {
-        BasicDepositBox box = new BasicDepositBox(msg.sender);
+        // BasicDepositBox box = new BasicDepositBox(msg.sender);
+        BasicDepositBox box = new BasicDepositBox();
         userDepositBoxes[msg.sender].push(address(box));
         emit BoxCreated(msg.sender, address(box), "Basic");
+
+        // 立刻转移box的所有权从当前合约转移 给 msg.sender
+        transferBoxOwnershipInternal(address(box), msg.sender);
+
         return address(box);
     }
 
     // 创建 premium box
     function createPremiumBox() external returns (address) {
-        PremiumDepositBox box = new PremiumDepositBox(msg.sender);
+        // PremiumDepositBox box = new PremiumDepositBox(msg.sender);
+        PremiumDepositBox box = new PremiumDepositBox();
         userDepositBoxes[msg.sender].push(address(box));
         emit BoxCreated(msg.sender, address(box), "Premium");
+
+        // 立刻转移box的所有权从当前合约转移 给 msg.sender
+        transferBoxOwnershipInternal(address(box), msg.sender);
+
         return address(box);
     }
 
     // 创建 timelocked box
     function createTimeLockedBox(uint256 _lockDuration) external returns (address) {
-        TimeLockedDepositBox box = new TimeLockedDepositBox(msg.sender,_lockDuration);
+        // TimeLockedDepositBox box = new TimeLockedDepositBox(msg.sender,_lockDuration);
+        TimeLockedDepositBox box = new TimeLockedDepositBox(_lockDuration);
         userDepositBoxes[msg.sender].push(address(box));
         emit BoxCreated(msg.sender, address(box), "TimeLocked");
+
+        // 立刻转移box的所有权从当前合约转移 给 msg.sender
+        transferBoxOwnershipInternal(address(box), msg.sender);
+
         return address(box);
     }
 
@@ -53,6 +68,26 @@ contract VaultManager {
         require(box.getOwner() == msg.sender, "Not the box owner");
 
         box.storeSecret(_secret);
+    }
+
+    // 转移储蓄箱internal
+    function transferBoxOwnershipInternal(address _boxAddress,address _newOwner) internal{
+        IDepositBox box = IDepositBox(_boxAddress);
+        require(box.getOwner() == address(this), "Not the contract call");
+
+        box.transferOwnership(_newOwner);
+
+        address[] storage boxes = userDepositBoxes[address(this)];
+        for (uint i=0;i<boxes.length;i++){
+            if (boxes[i] == _boxAddress){
+                // 用最后一个元素覆盖当前元素，并将最后一个元素出队
+                boxes[i] = boxes[boxes.length - 1];
+                boxes.pop();
+                break;
+            }
+        }
+
+        userDepositBoxes[_newOwner].push(_boxAddress);
     }
 
     // 转移储蓄箱

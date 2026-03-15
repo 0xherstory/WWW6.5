@@ -5,7 +5,7 @@ import "./day14-BaseDepositBox.sol";
 
 contract BasicDepositBox is BaseDepositBox {
 
-    constructor(address _owner) BaseDepositBox(_owner){}
+    // constructor(address _owner) BaseDepositBox(_owner){}
     function getBoxType() external pure override returns (string memory) {
         return "Basic";
     }

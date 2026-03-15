@@ -17,10 +17,16 @@ abstract contract BaseDepositBox is IDepositBox{
         _;
     }
 
-    constructor(address _owner){
-        owner = _owner;
+    constructor(){
+        owner = msg.sender;
         depositTime = block.timestamp;
     }
+
+    // constructor(address _owner){
+    //     owner = _owner;
+    //     depositTime = block.timestamp;
+    // }
+
 
     function getOwner() public view override returns (address){
         return owner;

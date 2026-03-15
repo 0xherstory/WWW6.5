@@ -6,7 +6,7 @@ import "./day14-BaseDepositBox.sol";
 contract TimeLockedDepositBox is BaseDepositBox {
     uint256 private unlockTime;
 
-    constructor(address _owner,uint256 _lockDuration) BaseDepositBox(_owner){
+    constructor(uint256 _lockDuration){
         unlockTime = block.timestamp + _lockDuration;
     }
 
