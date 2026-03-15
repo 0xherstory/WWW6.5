@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.0;
 
-import "./ScientificCalculator.sol";
+import "./Day9_2ScientificCalculator.sol";
 
 contract Calculator{
 
