@@ -17,9 +17,11 @@ Plain analogy: It is a study lab where every lecture becomes a small working mac
 3. `day3-votingsystem/`: Day 3 contract + UI demo.
 4. `day4-auctionhouse/`: Day 4 contract + UI demo.
 5. `day5-adminonly/`: Day 5 contract + UI demo.
-6. `baseline/`: reusable toolchain baseline for all 30 days.
-7. `../Note/script/`: transcript materials and extraction notes.
-8. `../Note/note.md`: consolidated theory notes.
+6. `day6-etherpiggybank/`: Day 6 contract + UI demo.
+7. `day7-approvalpiggybank/`: Day 7 contract + UI demo.
+8. `baseline/`: reusable toolchain baseline for all 30 days.
+9. `../Note/script/`: transcript materials and extraction notes.
+10. `../Note/note.md`: consolidated theory notes.
 
 Technical statement: Day folders are organized as learning modules with source and minimal interaction demos.  
 Plain analogy: Each day is one chapter with both textbook pages and a small experiment kit.
@@ -34,8 +36,8 @@ Plain analogy: It works like `screen -> signature card -> service counter -> rul
 Technical statement: Solidity contracts are the trust anchor because state transitions are validated by consensus.  
 Plain analogy: Rules are enforced by a shared public court, not by one app server admin.
 
-Technical statement: Day1-Day5 forms a compact progression from basic state mutation to structured data, collection logic, time constraints, and role-based access control.  
-Plain analogy: You start with a simple button, then profile forms, then vote tables, then auction deadlines, and finally admin permissions.
+Technical statement: Day1-Day7 forms a compact progression from basic state mutation to structured data, collection logic, time constraints, role control, and payable ETH flows.  
+Plain analogy: You start with a simple button, then profile forms, vote tables, auction deadlines, admin permissions, and finally a real shared piggy bank.
 
 ---
 
@@ -80,6 +82,22 @@ Plain analogy: It is a vault with a manager plus approved withdrawal slips.
 
 Technical statement: Core transitions are `addTreasure`, `approveWithdrawal`, `withdrawTreasure`, and `transferOwnership`.  
 Plain analogy: The manager fills the vault, grants permits, users withdraw by permit, and manager role can be handed over.
+
+### Day6 `EtherPiggyBank`
+
+Technical statement: The state tracks manager role, membership map, per-member balances, and total deposited ETH accounting.  
+Plain analogy: It is a savings club ledger where the manager controls membership and each member has a personal line item.
+
+Technical statement: Core transitions are `addMember`, `deposit (payable)`, and accounting-only `withdraw`.  
+Plain analogy: Members can put money into the shared jar, and the ledger can deduct a member amount without yet sending ETH out.
+
+### Day7 `ApprovalPiggyBank`
+
+Technical statement: Day7 adds approval-gated withdrawal plus real ETH transfer back to member wallets.  
+Plain analogy: The manager signs a withdrawal ticket, then the member can cash out from the jar.
+
+Technical statement: Core transitions are `approveWithdrawal`, `withdraw` with transfer, and `transferBankManager`.  
+Plain analogy: Approve, pay out, and hand over manager keys when needed.
 
 ---
 
@@ -189,7 +207,7 @@ Plain analogy: The desk prints a two-field receipt and the app shows it on scree
 
 ---
 
-## Day3–Day5 Implementation Summary
+## Day3–Day7 Implementation Summary
 
 ### Day3 `VotingSystem` (implemented)
 
@@ -230,12 +248,37 @@ Implemented components:
 4. Owner approval function.
 5. Withdraw flow with role-dependent checks.
 
+### Day6 `EtherPiggyBank` (implemented)
+
+Technical statement: Day6 introduces a membership-based shared savings pool with payable deposits and balance accounting.  
+Plain analogy: It is a club piggy bank where approved members can deposit and track what belongs to them.
+
+Implemented components:
+
+1. Bank manager + member registration.
+2. Payable `deposit`.
+3. Per-member balance mapping.
+4. Accounting `withdraw` and total deposit tracker.
+5. Contract ETH balance read function.
+
+### Day7 `ApprovalPiggyBank` (implemented)
+
+Technical statement: Day7 upgrades Day6 by adding manager approvals and actual ETH transfer on withdraw.  
+Plain analogy: No one can cash out unless the manager approves, and approved withdraw sends real ETH.
+
+Implemented components:
+
+1. Manager-controlled `approveWithdrawal`.
+2. Approval mapping per member.
+3. ETH transfer in `withdraw`.
+4. Manager handover with `transferBankManager`.
+
 ---
 
 ## Why This Sequence Is Meaningful
 
-Technical statement: Day1->Day5 forms a progressive path: scalar state -> structured text state -> collections -> time + conditional control -> role-based access control.  
-Plain analogy: It is learning numbers, then forms, then tables, then deadlines, then permissions.
+Technical statement: Day1->Day7 forms a progressive path: scalar state -> structured text state -> collections -> time control -> role-based permissions -> payable ETH custody + approval-based payouts.  
+Plain analogy: It is learning numbers, then forms, then tables, then deadlines, then permissions, then real money flow governance.
 
 Technical statement: This progression mirrors real protocol development: model state, enforce transitions, constrain actors, then expose safe read paths.  
 Plain analogy: Build the ledger, define legal edits, decide who can edit, and always provide transparent lookup.
