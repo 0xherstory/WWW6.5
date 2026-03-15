@@ -3,7 +3,7 @@
 pragma solidity ^0.8.0;
 import "./day12_ERC20.sol";
 
-contract PreOrderToken is MyToken {
+contract PreOrderToken is SimpleERC20 {
 
     uint256 public tokenPrice;
     uint256 public saleStartTime;
