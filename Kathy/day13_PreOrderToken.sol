@@ -1,18 +1,20 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.0;
 
-contract PreOderToken is MyToken {
+import "./day12_SimpleERC20.sol";
+
+contract SimplifiedTokenSale is SimpleERC20 {
     uint256 public tokenPrice;
     uint256 public saleStartTime;
     uint256 public saleEndTime;
-    uint256 public minPurchse;
-    uint256 public macPurchase;
+    uint256 public minPurchase;
+    uint256 public maxPurchase;
     uint256 public totalRaised;
     address public projectOwner;
     bool public  finalized = false;
     bool private initialTransferDone = false;
 
-    event TokensPurchased(address indexed buyer, uin256 etherAmount, uint256 tokenAmount);
+    event TokensPurchased(address indexed buyer, uint256 etherAmount, uint256 tokenAmount);
     event SaleFinalized(uint256 totalRaised, uint256 totalTokensSold);
 
     constructor(
@@ -22,9 +24,9 @@ contract PreOderToken is MyToken {
         uint256 _minPurchase,
         uint256 _maxPurchase,
         address _projectOwner
-    ) SumpleERC20(_initialSupply) {
+  ) SimpleERC20(_initialSupply) {
         tokenPrice = _tokenPrice;
-        saleStarTime = block.timestamp;
+        saleStartTime = block.timestamp;
         saleEndTime = block.timestamp + _saleDurationInSeconds;
         minPurchase = _minPurchase;
         maxPurchase = _maxPurchase;
@@ -36,17 +38,17 @@ contract PreOderToken is MyToken {
         initialTransferDone = true;
     }
 
-    function isSaleActive() public view returns (book) {
-        return (!finalized && block,timestamp >= saleStartTime && block.timestamp <= saleEndTime);
+    function isSaleActive() public view returns (bool) {
+        return (!finalized && block.timestamp >= saleStartTime && block.timestamp <= saleEndTime);
     }
 
     function buyTokens() public payable {
         require(isSaleActive(), "Sale is not active.");
-        require(msg.value >= minPurchase, "Amount is below minimum purchase.");
-        require(msg.value <= maxPurchase, "Amount exeeds maxium purchase.");
+        require(msg.value >= minPurchase, "Amount is below minimum purchase");
+        require(msg.value <= maxPurchase, "Amount exceeds maximum purchase");
 
         uint256 tokenAmount = (msg.value * 10**uint256(decimals)) / tokenPrice;
-        require(balanceOf[address(this)] >= tokenAmount, "Not enough tokens left for sale.");
+        require(balanceOf[address(this)] >= tokenAmount, "Not enough tokens left for sale");
 
         totalRaised += msg.value;
         _transfer(address(this), msg.sender, tokenAmount);
@@ -72,7 +74,7 @@ contract PreOderToken is MyToken {
         require(block.timestamp > saleEndTime, "Sale not finished yet.");
 
         finalized = true;
-        uint256 tokenSold = totalSupply - balanceOf[address(this)];
+        uint256 tokensSold = totalSupply - balanceOf[address(this)];
 
         (bool success, ) = projectOwner.call{value: address(this).balance}("");
         require(success, "Transfer to project owner failed.");
