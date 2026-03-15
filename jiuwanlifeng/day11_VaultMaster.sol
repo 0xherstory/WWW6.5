@@ -1,31 +1,23 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier:MIT
+pragma solidity ^0.8.0;
 
-pragma solidity ^0.8.20;
-
-import "./Ownable.sol";
-
-contract VaultMaster is Ownable{
-
-
-    event DepositSuccessful(address indexed account, uint256 value);
-    event WithdrawSuccessful(address indexed reciepient, uint256 value);
-    
-
-    function getBalance()public view returns(uint256){
-        return address(this).balance;
+contract ScientificCalculator
+{
+    function power(uint256 base,uint256 exponent)public pure returns(uint256)
+    {
+        if(exponent==0)return 1;
+        else return(base**exponent);
     }
 
-    function deposit()public payable{
-        require(msg.value >0, "Enter a valid amount");
-        emit DepositSuccessful(msg.sender, msg.value);
-    }
+    function squareRoot(int256 number) public pure returns (int256) 
+    {
+        require(number >= 0, "Cannot calculate square root of negative number");
+        if (number == 0) return 0;
 
-    function withdraw(address _to, uint256 _amount) public onlyOwner {
-        require(_amount <= getBalance(), "Insufficient balance");
-        (bool success , ) = payable(_to).call{value: _amount}("");
-        require(success, "Transfer Failed");
-        emit WithdrawSuccessful(_to, _amount);
-        
+        int256 result = number / 2;
+        for (uint256 i = 0; i < 10; i++) {
+            result = (result + number / result) / 2;
+        }
+        return result;
     }
-
 }
