@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "Day14-BaseDepositBox.sol";
+import "./Day14-BaseDepositBox.sol";
 
 //存储一个秘密，但在特定时间过去之前你无法检索它
 contract TimeLockedDepositBox is BaseDepositBox {

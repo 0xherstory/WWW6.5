@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: MIT
 
 pragma solidity ^0.8.0; 
-import "Day14-IDepositBox.sol";
+import "./Day14-IDepositBox.sol";
 
 
 //abstract：抽象合约
