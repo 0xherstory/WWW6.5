@@ -21,8 +21,7 @@ contract TimeLockedDepositBox is BaseDepositBox {
         unlockTime = block.timestamp + lockDuration;
     }
 
-    // 函数修改器：
-    校验当前时间是否已超过解锁时间。
+    // 函数修改器：校验当前时间是否已超过解锁时间。
     modifier timeUnlocked() {
         require(block.timestamp >= unlockTime, "Box is still time-locked");
         _;
