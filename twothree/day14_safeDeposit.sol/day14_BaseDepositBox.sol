@@ -1,7 +1,15 @@
-//SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
 
-import "./day14_IDepositbox.sol";
+// 内联定义接口（删除import）
+interface IDepositBox {
+    function getOwner() external view returns (address);
+    function transferOwnership(address newOwner) external;
+    function storeSecret(string memory secret) external;
+    function getsecret() external view returns (string memory);
+    function getBoxType() external pure returns (string memory);
+    function getDepositTime() external view returns (uint256);
+}
 
 abstract contract BaseDepositBox is IDepositBox {
     address public owner;
@@ -16,11 +24,10 @@ abstract contract BaseDepositBox is IDepositBox {
     }
 
     modifier onlyOwner() {
-        require(msg.sender ==owner, "Not owner");
+        require(msg.sender == owner, "BaseDepositBox: not owner");
         _;
     }
 
-    //实现的函数
     function getOwner() external view override returns (address) {
         return owner;
     }
@@ -29,6 +36,5 @@ abstract contract BaseDepositBox is IDepositBox {
         secret = _secret;
     }
 
-    //抽象函数 - 子类必须实现
     function getBoxType() external pure virtual override returns (string memory);
 }
