@@ -1,8 +1,8 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
 contract CropInsurance is Ownable {
   AggregatorV3Interface private weatherOracle;
@@ -29,7 +29,7 @@ contract CropInsurance is Ownable {
     uint256 ethPrice = getEthPrice();
     uint256 premiumInEth = (INSURANCE_PREMIUM_USD * 1e18) / ethPrice;
 
-    require(msg.value >= premiumInEth, "Insufficient premium amouont");
+    require(msg.value >= premiumInEth, "Insufficient premium amount");
     require(!hasInsurance[msg.sender], "Already has insurance");
 
     hasInsurance[msg.sender] = true;
