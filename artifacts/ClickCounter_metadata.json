@@ -1,0 +1,66 @@
+{
+	"compiler": {
+		"version": "0.8.30+commit.73712a01"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"name": "click",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "counter",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"Tessa/day01-ClickCounter.sol": "ClickCounter"
+		},
+		"evmVersion": "prague",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"Tessa/day01-ClickCounter.sol": {
+			"keccak256": "0x94c55ab68c8f9e66fe17ca90749f26c545cb0570e27a529cf9fa814f0e02f641",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://d58798c55e01369edcfac43a242d87f8a9e8414bbde543a6751716f5176e7fb1",
+				"dweb:/ipfs/QmbFxnfy2suTLV9z8zqC9gxPUgKUAKqUvdLegqpXjpqPpp"
+			]
+		}
+	},
+	"version": 1
+}
