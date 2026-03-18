@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.19;
+pragma solidity ^0.8.0;
 
 //import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 //Chainlink 的标准预言机接口
