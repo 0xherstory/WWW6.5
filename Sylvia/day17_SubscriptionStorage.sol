@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./SubscriptionStorageLayout.sol";
+import "./day17_SubscriptionStorageLayout.sol";
 
 contract SubscriptionStorage is SubscriptionStorageLayout {
     modifier onlyOwner() {
