@@ -2,7 +2,7 @@
 pragma solidity ^0.8.19;
 
 // 导入 Chainlink 的预言机接口（用于模拟标准预言机结构）
-import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+import "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
 
 // 导入 OpenZeppelin 的 Ownable 合约，用于管理员权限控制
 import "@openzeppelin/contracts/access/Ownable.sol";
