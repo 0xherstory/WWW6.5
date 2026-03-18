@@ -5,8 +5,8 @@ pragma solidity ^0.8.19;
 //Chainlink 的标准预言机接口
 //import "@openzeppelin/contracts/access/Ownable.sol";
 
-import "day18_AggregatorV3Interface.sol";
-import "day18_Ownable.sol";
+import "./day18_AggregatorV3Interface.sol";
+import "./day18_Ownable.sol";
 
 contract MockWeatherOracle is AggregatorV3Interface, Ownable 
 {
