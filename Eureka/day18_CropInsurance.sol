@@ -3,8 +3,8 @@ pragma solidity ^0.8.19;
 
 //import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 //import "@openzeppelin/contracts/access/Ownable.sol";
-import "day18_AggregatorV3Interface.sol";
-import "day18_Ownable.sol";
+import "./day18_AggregatorV3Interface.sol";
+import "./day18_Ownable.sol";
 
 contract CropInsurance is Ownable 
 {
