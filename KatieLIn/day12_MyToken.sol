@@ -2,8 +2,8 @@
 pragma solidity ^0.8.20;
 
 contract MyToken {
-    string public name = "Web3 Compass";
-    string public symbol = "COM";
+    string public name = "SimpleToken";
+    string public symbol = "SIM";
     uint8 public decimals = 18;
     uint256 public totalSupply;
     mapping(address => uint256) public balanceOf;
