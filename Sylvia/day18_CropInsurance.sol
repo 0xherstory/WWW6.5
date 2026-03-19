@@ -2,7 +2,7 @@
 pragma solidity ^0.8.19;
 
 import "./day18_AggregatorV3Interface.sol";
-import "./day11_Ownable.sol";
+import "./day18_Ownable.sol";
 
 contract CropInsurance is Ownable {
     AggregatorV3Interface private weatherOracle;
