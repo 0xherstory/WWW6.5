@@ -1,14 +1,29 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.19;
+pragma solidity ^0.8.0;
 
-// 导入Chainlink的价格接口，用来模拟真实预言机的格式
-import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+interface AggregatorV3Interface {
+    function decimals() external view returns (uint8);
+    function description() external view returns (string memory);
+    function version() external view returns (uint256);
+    function getRoundData(uint80 _roundId) external view returns (
+        uint80 roundId, int256 answer, uint256 startedAt,
+        uint256 updatedAt, uint80 answeredInRound
+    );
+    function latestRoundData() external view returns (
+        uint80 roundId, int256 answer, uint256 startedAt,
+        uint256 updatedAt, uint80 answeredInRound
+    );
+    }
 
 // 模拟天气预言机合约
 // 实现了AggregatorV3Interface接口 = 格式跟真实Chainlink预言机一样
 // 继承了Ownable = 有owner权限管理
-contract MockWeatherOracle is AggregatorV3Interface, Ownable {
+contract MockWeatherOracle is AggregatorV3Interface{
+    address public owner;
+    modifier onlyOwner() {
+    require(msg.sender == owner, "Not owner");
+    _;
+    }
     
     uint8 private _decimals;          // 小数位数（降雨量用整数，所以是0）
     string private _description;      // 这个预言机的描述
@@ -17,7 +32,7 @@ contract MockWeatherOracle is AggregatorV3Interface, Ownable {
     uint256 private _lastUpdateBlock; // 最后更新的区块号
 
     // 部署时初始化所有基本信息
-    constructor() Ownable(msg.sender) {
+    constructor() {
         _decimals = 0;                      // 降雨量用整数毫米，不需要小数
         _description = "MOCK/RAINFALL/USD"; // 描述：模拟降雨量数据
         _roundId = 1;                       // 从第1轮开始
