@@ -1,77 +1,62 @@
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.19;
+//SPDX-License-Identifier:MIT
+pragma  solidity ^0.8.20;
+import "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-import "./day18_AggregatorV3Interface.sol";
-import "./day18_Ownable.sol";
-
-contract MockWeatherOracle is AggregatorV3Interface, Ownable {
+contract MockWeatherOracle is AggregatorV3Interface, Ownable{
     uint8 private _decimals;
-    string private _description;
-    uint80 private _roundId;
+    string private _discreption;
+    uint80 private _roundID;
     uint256 private _timestamp;
     uint256 private _lastUpdateBlock;
 
-    constructor() Ownable(msg.sender) {
-        _decimals = 0; // Rainfall in whole millimeters
-        _description = "MOCK/RAINFALL/USD";
-        _roundId = 1;
+    constructor() Ownable(msg.sender){
+        _decimals = 0; //because the rainfall always integrate
+        _discreption = "MOCK/RAINFALL/USD";
+        _roundID = 1;
         _timestamp = block.timestamp;
         _lastUpdateBlock = block.number;
     }
 
-    function decimals() external view override returns (uint8) {
+    function decimals() external view override returns(uint8){
         return _decimals;
     }
 
-    function description() external view override returns (string memory) {
-        return _description;
+    function description() external view override returns(string memory){
+        return _discreption;
     }
 
-    function version() external pure override returns (uint256) {
+    function version() external pure override returns(uint256){
         return 1;
     }
 
-    function getRoundData(uint80 _roundId_)
-        external
-        view
-        override
-        returns (uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound)
-    {
-        return (_roundId_, _rainfall(), _timestamp, _timestamp, _roundId_);
+    //history data
+    function getRoundData(uint80 _roundID_) external view override returns(uint80 roundID,int256 answer, uint256 startedAt,uint256 updateAt, uint80 answeredInRound ){
+        return (_roundID_, _rainfall(), _timestamp, _timestamp, _roundID) ;
     }
 
-    function latestRoundData()
-        external
-        view
-        override
-        returns (uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound)
-    {
-        return (_roundId, _rainfall(), _timestamp, _timestamp, _roundId);
-    }
+    //core function : lastest data , this function will be call in CropInsurance
+    //latestRoundData
+    function latestRoundData() external view override returns(uint80 roundID,int256 answer, uint256 startedAt,uint256 updateAt, uint80 answeredInRound ){
+        return (_roundID, _rainfall(), _timestamp, _timestamp, _roundID) ;
+    } 
 
-    // Function to get current rainfall with random variation
-    function _rainfall() public view returns (int256) {
-        // Use block information to generate pseudo-random variation
+    function _rainfall() public view returns(int256) {
         uint256 blocksSinceLastUpdate = block.number - _lastUpdateBlock;
-        uint256 randomFactor = uint256(keccak256(abi.encodePacked(
-            block.timestamp,
-            block.coinbase,
-            blocksSinceLastUpdate
-        ))) % 1000; // Random number between 0 and 999
+        uint256 randomFactor = uint256(keccak256(abi.encodePacked(block.timestamp,block.coinbase,blocksSinceLastUpdate))) %1000;
 
-        // Return random rainfall between 0 and 999mm
         return int256(randomFactor);
     }
 
-    // Function to update random rainfall
     function _updateRandomRainfall() private {
-        _roundId++;
+        _roundID ++;
         _timestamp = block.timestamp;
         _lastUpdateBlock = block.number;
     }
 
-    // Function to force update rainfall (anyone can call)
-    function updateRandomRainfall() external {
+    //in real situation, this function trigered by chainlink
+    function updateRandomRainfall() external{
         _updateRandomRainfall();
     }
+
 }
