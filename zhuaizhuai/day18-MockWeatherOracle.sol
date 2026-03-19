@@ -2,10 +2,8 @@
 pragma solidity ^0.8.0;
 
 // 导入Chainlink的价格接口，用来模拟真实预言机的格式
-import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
-
-// 导入OpenZeppelin的权限管理合约
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "https://github.com/smartcontractkit/chainlink/blob/develop/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol";
 
 // 模拟天气预言机合约
 // 实现了AggregatorV3Interface接口 = 格式跟真实Chainlink预言机一样
