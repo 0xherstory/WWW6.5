@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import "day18-AggregatorV3Interface.sol";
+import "./day18-AggregatorV3Interface.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract MockWeatherOracle is AggregatorV3Interface, Ownable {
