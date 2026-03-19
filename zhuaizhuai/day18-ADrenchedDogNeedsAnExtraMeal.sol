@@ -1,11 +1,30 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+interface AggregatorV3Interface {
+    function decimals() external view returns (uint8);
+    function description() external view returns (string memory);
+    function version() external view returns (uint256);
+    function getRoundData(uint80 _roundId) external view returns (
+        uint80 roundId, int256 answer, uint256 startedAt,
+        uint256 updatedAt, uint80 answeredInRound
+    );
+    function latestRoundData() external view returns (
+        uint80 roundId, int256 answer, uint256 startedAt,
+        uint256 updatedAt, uint80 answeredInRound
+    );
+    }
 
-contract ADrenchedDogNeedsAnExtraMeal is Ownable {
+    
 
+contract ADrenchedDogNeedsAnExtraMeal {
+    address public owner;  // 加这行
+    
+    modifier onlyOwner() {  // 加这个modifier
+        require(msg.sender == owner, "Not owner");
+        _;
+    }
+    
     AggregatorV3Interface private weatherOracle;
     
     uint256 public constant RAINFALL_THRESHOLD = 16;
@@ -15,7 +34,8 @@ contract ADrenchedDogNeedsAnExtraMeal is Ownable {
     mapping(address => uint256) public premiumPaid;
     mapping(address => uint256) public lastClaimTimestamp;
 
-    constructor(address _weatherOracle) Ownable(msg.sender) {
+    constructor(address _weatherOracle) {
+        owner = msg.sender;
         weatherOracle = AggregatorV3Interface(_weatherOracle);
     }
 
@@ -71,7 +91,7 @@ contract ADrenchedDogNeedsAnExtraMeal is Ownable {
     }
 
    function withdraw() external onlyOwner {
-    (bool success,) = payable(owner()).call{value: address(this).balance}("");
+   (bool success,) = payable(owner).call{value: address(this).balance}("");
     require(success, "Transfer failed");
     }  // ← 先关闭withdraw！
 
