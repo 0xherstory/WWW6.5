@@ -14,3 +14,4 @@ contract WeaponStorePlugin {
     function getWeapon(address user) public view returns (string memory) { //声明getAchievement为公共的只读函数，接受用户地址作为参数，返回一个字符串类型的值
         return equippedWeapon[user]; //函数内通过用户地址从latestAchievement映射中获取并返回该用户对应的最新成就
     }
+}
