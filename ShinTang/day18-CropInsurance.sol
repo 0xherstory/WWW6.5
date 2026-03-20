@@ -31,7 +31,7 @@ contract CropInsurance is Ownable {
     // 用户按当前 ETH 价支付保费并获得保单
     function purchaseInsurance() external payable {
         uint256 ethPrice = getEthPrice();
-        uint256 premiumInEth = (INSURANCE_PREMIUM_USD * 1e18) / ethPrice;
+        uint256 premiumInEth = (INSURANCE_PREMIUM_USD * 1e18 * 1e8) / ethPrice;
 
         require(msg.value >= premiumInEth, "Insufficient premium amount");
         require(!hasInsurance[msg.sender], "Already insured");
@@ -58,7 +58,7 @@ contract CropInsurance is Ownable {
             emit ClaimSubmitted(msg.sender);
 
             uint256 ethPrice = getEthPrice();
-            uint256 payoutInEth = (INSURANCE_PAYOUT_USD * 1e18) / ethPrice;
+            uint256 payoutInEth = (INSURANCE_PAYOUT_USD * 1e18 * 1e8) / ethPrice;
 
             (bool success,) = msg.sender.call{value: payoutInEth}("");
             require(success, "Transfer failed");
