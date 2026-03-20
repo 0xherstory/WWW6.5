@@ -91,8 +91,8 @@ contract CropInsurance is Ownable {
         // 获取当前 ETH/USD 价格
         uint256 ethPrice = getEthPrice();
         // 计算保费对应的 ETH 数量
-        // 公式: (保费美元 * 1e18) / ETH价格 = 所需ETH数量（wei）
-        uint256 premiumInEth = (INSURANCE_PREMIUM_USD * 1e18) / ethPrice;
+        // 公式: (保费美元 * 1e26) / ETH价格 = 所需ETH数量（wei）
+        uint256 premiumInEth = (INSURANCE_PREMIUM_USD * 1e26) / ethPrice;
 
         // 验证支付的 ETH 足够
         require(msg.value >= premiumInEth, "Insufficient premium amount");
@@ -142,7 +142,7 @@ contract CropInsurance is Ownable {
             // 获取当前 ETH/USD 价格
             uint256 ethPrice = getEthPrice();
             // 计算赔付金额对应的 ETH 数量
-            uint256 payoutInEth = (INSURANCE_PAYOUT_USD * 1e18) / ethPrice;
+            uint256 payoutInEth = (INSURANCE_PAYOUT_USD * 1e26) / ethPrice;
 
             // 执行赔付转账
             // 使用 call{value: amount}("") 发送 ETH，更灵活且兼容性好
@@ -208,7 +208,7 @@ contract CropInsurance is Ownable {
 // 2. 价格转换计算:
 //    - 保费和赔付金额以美元计价
 //    - 根据实时 ETH 价格转换为 ETH 数量
-//    - 公式: ethAmount = (usdAmount * 1e18) / ethPrice
+//    - 公式: ethAmount = (usdAmount * 1e26) / ethPrice
 //
 // 3. 安全措施:
 //    - 24 小时索赔冷却期，防止频繁索赔
