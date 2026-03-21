@@ -35,7 +35,6 @@ contract GasEfficientVoting {
 
     
     // === Core Functions ===
-    
     /**
      * @dev Create a new proposal
      * @param name The proposal name (pass as bytes32 for gas efficiency)
