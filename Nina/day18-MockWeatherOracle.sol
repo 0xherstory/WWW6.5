@@ -10,7 +10,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol"; // AggregatorV3Interface: 这是 Chainlink 的标准预言机接口——用于获取价格信息或在我们的例子中模拟降雨等数据。
+import "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol"; // AggregatorV3Interface: 这是 Chainlink 的标准预言机接口——用于获取价格信息或在我们的例子中模拟降雨等数据。
 import "@openzeppelin/contracts/access/Ownable.sol"; // Ownable: OpenZeppelin 的一个助手，它为我们提供了所有权功能——包括  owner() 和onlyOwner 修饰符。——授予部署者管理员访问权限
 // 编译后，在file > .deps里可以看到引用的合约
 
