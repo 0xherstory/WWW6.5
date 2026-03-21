@@ -3,7 +3,7 @@
 pragma solidity ^0.8.19;
 //AggregatorV3Interface: 这是 Chainlink 的标准预言机接口——用于获取价格信息
 //Ownable:提供了所有权功能
-import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+import "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract MockWeatherOracle is AggregatorV3Interface, Ownable {

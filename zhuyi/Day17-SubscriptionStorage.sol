@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "../Day17-SubscriptionStorageLayout.sol";
+import "./Day17-SubscriptionStorageLayout.sol";
 //代理与逻辑合约具有相同的变量结构
 //delegatecall:代码从逻辑合约运行但存储属于代理
 contract SubscriptionStorage is SubscriptionStorageLayout {
