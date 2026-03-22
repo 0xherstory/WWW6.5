@@ -2,8 +2,19 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+interface AggregatorV3Interface {
+    function latestRoundData() external view returns (
+        uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound
+    );
+}
+
+abstract contract Ownable {
+    address private _owner;
+    constructor() { _owner = msg.sender; }
+    modifier onlyOwner() { require(msg.sender == _owner,"not owner"); _; }
+    function owner() public view returns(address) { return _owner; }
+}
+
 
 contract CropInsurance is Ownable {
     AggregatorV3Interface private weatherOracle;
