@@ -2,6 +2,7 @@
 
 pragma solidity ^0.8.19;
 
+//IERC721是ERC721 NFT标准接口 
 interface IERC721 {
     event Transfer(address indexed from, address indexed to, uint256 indexed tokenId);
     event Approval(address indexed owner, address indexed approved, uint256 indexed tokenId);
@@ -19,7 +20,7 @@ interface IERC721 {
     function transferFrom(address from, address to, uint256 tokenId) external;
     function safeTransferFrom(address from, address to, uint256 tokenId) external;
     function safeTransferFrom(address from, address to, uint256 tokenId, bytes calldata data) external;
-    
+
 }
 
 interface IERC721Receiver {
@@ -61,35 +62,42 @@ contract SimpleNFT is IERC721 {
 
         _tokenApprovals[tokenId] = to;
         emit Approval(owner, to, tokenId);
+
     }
 
     function getApproved(uint256 tokenId) public view override returns (address) {
         require(_owners[tokenId] != address(0), "Token doesn't exist");
         return _tokenApprovals[tokenId];
+
     }
 
     function setApprovalForAll(address operator, bool approved) public override {
         require(operator != msg.sender, "Self approval");
         _operatorApprovals[msg.sender][operator] = approved;
         emit ApprovalForAll(msg.sender, operator, approved);
+
     }
 
     function isApprovedForAll(address owner, address operator) public view override returns (bool) {
         return _operatorApprovals[owner][operator];
+
     }
 
     function transferFrom(address from, address to, uint256 tokenId) public override {
         require(_isApprovedOrOwner(msg.sender, tokenId), "Not authorized");
         _transfer(from, to, tokenId);
+
     }
 
     function safeTransferFrom(address from, address to, uint256 tokenId) public override {
         safeTransferFrom(from, to, tokenId, "");
+
     }
 
     function safeTransferFrom(address from, address to, uint256 tokenId, bytes memory data) public override {
         require(_isApprovedOrOwner(msg.sender, tokenId), "Not authorized");
         _safeTransfer(from, to, tokenId, data);
+
     }
 
     function mint(address to, string memory uri) public {
@@ -101,23 +109,28 @@ contract SimpleNFT is IERC721 {
         _tokenURIs[tokenId] = uri;
 
         emit Transfer(address(0), to, tokenId);
+
     }
+
 
     function tokenURI(uint256 tokenId) public view returns (string memory) {
         require(_owners[tokenId] != address(0), "Token doesn't exist");
         return _tokenURIs[tokenId];
+
     }
+
 
     function _transfer(address from, address to, uint256 tokenId) internal virtual {
         require(ownerOf(tokenId) == from, "Not owner");
-        require(to != address(0), "Zero address");
+        require(to != address(0), "404 not found");
 
         _balances[from] -= 1;
         _balances[to] += 1;
         _owners[tokenId] = to;
 
-        delete _tokenApprovals[tokenId];
+        delete _tokenApprovals[tokenId]; //清楚旧的approval
         emit Transfer(from, to, tokenId);
+
     }
 
     function _safeTransfer(address from, address to, uint256 tokenId, bytes memory data) internal virtual {
@@ -126,11 +139,13 @@ contract SimpleNFT is IERC721 {
 
     }
 
+
     function _isApprovedOrOwner(address spender, uint256 tokenId) internal view returns (bool) {
         address owner = ownerOf(tokenId);
         return (spender == owner || getApproved(tokenId) == spender || isApprovedForAll(owner, spender));
 
     }
+
 
     function _checkOnERC721Received(address from, address to, uint256 tokenId, bytes memory data) private returns (bool) {
         if (to.code.length > 0) {
