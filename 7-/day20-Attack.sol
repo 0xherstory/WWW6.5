@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./day20_FortKnox.sol";
+import "./day20-FortKnox.sol";
 
 contract Attack {
     FortKnox public fortKnox;
