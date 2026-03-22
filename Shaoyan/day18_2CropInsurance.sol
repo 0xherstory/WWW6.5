@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import ".day18_1MockWeatherOracle.sol";
+import "./day18_1MockWeatherOracle.sol";
 
 contract CropInsurance {
     struct Policy {
