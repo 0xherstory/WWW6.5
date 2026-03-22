@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./Day20_1GoldVault.sol";
+import "./day20_1GoldVault.sol";
 
 contract GoldThief {
     GoldVault public vault;
