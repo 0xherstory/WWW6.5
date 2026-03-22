@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.27;
 
-// 拍卖行合约：day4-auction.sol
+// 拍卖行合约：day4_auction.sol
 contract AuctionHouse {
     // 公共状态变量（外部可直接查看）
     address public owner;          // 拍卖主人（部署合约的账户）
