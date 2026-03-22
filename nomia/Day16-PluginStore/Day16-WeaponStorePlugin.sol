@@ -17,5 +17,5 @@ contract WeaponStorePlugin {
 
     }
 
-    
+
 }

@@ -45,18 +45,22 @@ contract PluginStore{
         address user,
         string memory argument
         ) external {
+        //检查这个user是调用者本人
+        require(user == msg.sender,"can only update your own data;");
+
         address plugin = plugins[key];
         //插件得注册
         require(plugin != address(0), "Plugin not registered");
 
     bytes memory data = abi.encodeWithSignature(functionSignature, user, argument);
-    //.call()低级调用
+    //.call()低级调用 返回（bool,bytes memory) 后面空着是因为不需要后面返回的数据了
     (bool success, ) = plugin.call(data);
     require(success, "Plugin execution failed");
+
 }
     //只读
     function runPluginView(string memory key, string memory functionSignature, address user)external view returns(string memory){
-        //根据key查插件地址
+        //根据key查插件地址 
         address plugin = plugins[key];
         require(plugin != address(0), "No plugin found");
         bytes memory data = abi.encodeWithSignature(functionSignature, user);
