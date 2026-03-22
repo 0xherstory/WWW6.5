@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
+
 pragma solidity ^0.8.19;
 
-import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+import "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
+// import "https://raw.githubusercontent.com/smartcontractkit/chainlink/refs/tags/contracts-v1.3.0/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Day18_CropInsurance is Ownable {
@@ -38,6 +40,8 @@ contract Day18_CropInsurance is Ownable {
 
      function checkRainfallAndClaim() external {
         require(hasInsurance[msg.sender], "No active insurance");
+        //Add interval between claims
+        
         require(block.timestamp >= lastClaimTimestamp[msg.sender] + 1 days, "Must wait 24h between claims");
 
         (
@@ -53,6 +57,7 @@ contract Day18_CropInsurance is Ownable {
 
         uint256 currentRainfall = uint256(rainfall);
         emit RainfallChecked(msg.sender, currentRainfall);
+        //Claim and get insurance payment
 
         if (currentRainfall < RAINFALL_THRESHOLD) {
             lastClaimTimestamp[msg.sender] = block.timestamp;
@@ -91,11 +96,11 @@ contract Day18_CropInsurance is Ownable {
     }
 
     function withdraw() external onlyOwner {
-        payable(owner()).transfer(address(this).balance);
+        (bool success, ) = payable(owner()).call{value: address(this).balance}("");
+         require(success, "Transfer failed");
     }
 
     receive() external payable {}
-
     function getBalance() public view returns (uint256) {
         return address(this).balance;
     }
