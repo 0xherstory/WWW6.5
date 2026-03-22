@@ -1,20 +1,44 @@
-
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
 interface AggregatorV3Interface {
+    function decimals() external view returns (uint8);
+    function description() external view returns (string memory);
+    function version() external pure returns (uint256);
+    function getRoundData(uint80 _roundId) external view returns (
+        uint80 roundId,
+        int256 answer,
+        uint256 startedAt,
+        uint256 updatedAt,
+        uint80 answeredInRound
+    );
     function latestRoundData() external view returns (
-        uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound
+        uint80 roundId,
+        int256 answer,
+        uint256 startedAt,
+        uint256 updatedAt,
+        uint80 answeredInRound
     );
 }
 
 abstract contract Ownable {
     address private _owner;
-    constructor() { _owner = msg.sender; }
-    modifier onlyOwner() { require(msg.sender == _owner,"not owner"); _; }
-    function owner() public view returns(address) { return _owner; }
-}
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
+    constructor(address initialOwner) {
+        _owner = initialOwner;
+        emit OwnershipTransferred(address(0), initialOwner);
+    }
+
+    function owner() public view returns (address) {
+        return _owner;
+    }
+
+    modifier onlyOwner() {
+        require(_owner == msg.sender, "Not owner");
+        _;
+    }
+}
 
 contract MockWeatherOracle is AggregatorV3Interface, Ownable {
     uint8 private _decimals;
@@ -24,8 +48,8 @@ contract MockWeatherOracle is AggregatorV3Interface, Ownable {
     uint256 private _lastUpdateBlock;
 
     constructor() Ownable(msg.sender) {
-        _decimals = 0; // Rainfall in whole millimeters
-        _description = "MOCK/RAINFALL/USD";
+        _decimals = 0;
+        _description = "MOCK/RAINFALL";
         _roundId = 1;
         _timestamp = block.timestamp;
         _lastUpdateBlock = block.number;
@@ -43,48 +67,22 @@ contract MockWeatherOracle is AggregatorV3Interface, Ownable {
         return 1;
     }
 
-    function getRoundData(uint80 _roundId_)
-        external
-        view
-        override
-        returns (uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound)
-    {
+    function getRoundData(uint80 _roundId_) external view override returns (uint80, int256, uint256, uint256, uint80) {
         return (_roundId_, _rainfall(), _timestamp, _timestamp, _roundId_);
     }
 
-    function latestRoundData()
-        external
-        view
-        override
-        returns (uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound)
-    {
+    function latestRoundData() external view override returns (uint80, int256, uint256, uint256, uint80) {
         return (_roundId, _rainfall(), _timestamp, _timestamp, _roundId);
     }
 
-    // Function to get current rainfall with random variation
-    function _rainfall() public view returns (int256) {
-        // Use block information to generate pseudo-random variation
-        uint256 blocksSinceLastUpdate = block.number - _lastUpdateBlock;
-        uint256 randomFactor = uint256(keccak256(abi.encodePacked(
-            block.timestamp,
-            block.coinbase,
-            blocksSinceLastUpdate
-        ))) % 1000; // Random number between 0 and 999
-
-        // Return random rainfall between 0 and 999mm
+    function _rainfall() internal view returns (int256) {
+        uint256 randomFactor = uint256(keccak256(abi.encodePacked(block.timestamp, block.coinbase))) % 1000;
         return int256(randomFactor);
     }
 
-    // Function to update random rainfall
-    function _updateRandomRainfall() private {
+    function updateRandomRainfall() external {
         _roundId++;
         _timestamp = block.timestamp;
         _lastUpdateBlock = block.number;
     }
-
-    // Function to force update rainfall (anyone can call)
-    function updateRandomRainfall() external {
-        _updateRandomRainfall();
-    }
 }
-

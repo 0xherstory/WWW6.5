@@ -1,20 +1,34 @@
-
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
 interface AggregatorV3Interface {
     function latestRoundData() external view returns (
-        uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound
+        uint80 roundId,
+        int256 answer,
+        uint256 startedAt,
+        uint256 updatedAt,
+        uint80 answeredInRound
     );
 }
 
 abstract contract Ownable {
     address private _owner;
-    constructor() { _owner = msg.sender; }
-    modifier onlyOwner() { require(msg.sender == _owner,"not owner"); _; }
-    function owner() public view returns(address) { return _owner; }
-}
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
+    constructor(address initialOwner) {
+        _owner = initialOwner;
+        emit OwnershipTransferred(address(0), initialOwner);
+    }
+
+    function owner() public view returns (address) {
+        return _owner;
+    }
+
+    modifier onlyOwner() {
+        require(_owner == msg.sender, "Not owner");
+        _;
+    }
+}
 
 contract CropInsurance is Ownable {
     AggregatorV3Interface private weatherOracle;
@@ -52,16 +66,8 @@ contract CropInsurance is Ownable {
         require(hasInsurance[msg.sender], "No active insurance");
         require(block.timestamp >= lastClaimTimestamp[msg.sender] + 1 days, "Must wait 24h between claims");
 
-        (
-            uint80 roundId,
-            int256 rainfall,
-            ,
-            uint256 updatedAt,
-            uint80 answeredInRound
-        ) = weatherOracle.latestRoundData();
-
+        (, int256 rainfall,, uint256 updatedAt,) = weatherOracle.latestRoundData();
         require(updatedAt > 0, "Round not complete");
-        require(answeredInRound >= roundId, "Stale data");
 
         uint256 currentRainfall = uint256(rainfall);
         emit RainfallChecked(msg.sender, currentRainfall);
@@ -81,24 +87,12 @@ contract CropInsurance is Ownable {
     }
 
     function getEthPrice() public view returns (uint256) {
-        (
-            ,
-            int256 price,
-            ,
-            ,
-        ) = ethUsdPriceFeed.latestRoundData();
-
+        (, int256 price,,,) = ethUsdPriceFeed.latestRoundData();
         return uint256(price);
     }
 
     function getCurrentRainfall() public view returns (uint256) {
-        (
-            ,
-            int256 rainfall,
-            ,
-            ,
-        ) = weatherOracle.latestRoundData();
-
+        (, int256 rainfall,,,) = weatherOracle.latestRoundData();
         return uint256(rainfall);
     }
 
@@ -113,4 +107,3 @@ contract CropInsurance is Ownable {
         return address(this).balance;
     }
 }
-
