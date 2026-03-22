@@ -3,6 +3,7 @@ pragma solidity ^0.8.19;
 
 contract GasEfficientVoting {
    
+    uint8 public proposalCount;
     struct Proposal {
         bytes32 name;  
         uint32 voteCount;
