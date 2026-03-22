@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./day17-SSL.sol";
+import "./day17_SSL.sol";
 
 contract SubscriptionLogicV2 is SubscriptionStorageLayout {
     function addPlan(uint8 planId, uint256 price, uint256 duration) external {
