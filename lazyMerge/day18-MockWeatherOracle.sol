@@ -1,11 +1,9 @@
-
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.19;
 
 //  Chainlink 的标准预言机接口
-// import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
-// OpenZeppelin 的一个助手
-// import "@openzeppelin/contracts/access/Ownable.sol";
+import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract MockWeatherOracle is AggregatorV3Interface, Ownable {
     uint8 private _decimals;
@@ -78,4 +76,3 @@ contract MockWeatherOracle is AggregatorV3Interface, Ownable {
         _updateRandomRainfall();
     }
 }
-
