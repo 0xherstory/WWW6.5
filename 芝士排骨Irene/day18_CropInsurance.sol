@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+import "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
 
 // 农作物保险合约
 // 核心逻辑：农民买保险 → 预言机监测降雨量 → 降雨量低于阈值（干旱）→ 自动理赔
