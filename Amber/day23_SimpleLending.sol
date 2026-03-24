@@ -1,27 +1,24 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-// 引入防重入攻击库
-import "https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/master/contracts/utils/ReentrancyGuard.sol";
-
 /**
  * @title SimpleLending
- * @dev 基础借贷平台（存款 / 抵押 / 借款 / 还款）
+ * @dev 基础借贷平台
  */
-contract SimpleLending is ReentrancyGuard {
+contract SimpleLending {
 
     // ================= 状态变量 =================
 
     // 用户存款余额
     mapping(address => uint256) public depositBalances;
 
-    // 用户借款余额（本金+累计）
+    // 用户借款余额
     mapping(address => uint256) public borrowBalances;
 
     // 用户抵押余额
     mapping(address => uint256) public collateralBalances;
 
-    // 利率（基点：500 = 5%）
+    // 利率（500 = 5%）
     uint256 public interestRateBasisPoints = 500;
 
     // 抵押率（7500 = 75%）
@@ -41,9 +38,8 @@ contract SimpleLending is ReentrancyGuard {
 
     // ================= 存款 =================
 
-    // 存入ETH
     function deposit() external payable {
-        // 必须大于0
+        // 金额必须大于0
         require(msg.value > 0, "Amount must be greater than 0");
 
         depositBalances[msg.sender] += msg.value;
@@ -53,17 +49,15 @@ contract SimpleLending is ReentrancyGuard {
 
     // ================= 取款 =================
 
-    function withdraw(uint256 amount) external nonReentrant {
-        // 校验金额
+    function withdraw(uint256 amount) external {
         require(amount > 0, "Amount must be greater than 0");
         require(depositBalances[msg.sender] >= amount, "Insufficient balance");
 
-        // 先更新状态（防重入）
+        // 先更新状态
         depositBalances[msg.sender] -= amount;
 
-        // 转账
-        (bool success, ) = msg.sender.call{value: amount}("");
-        require(success, "Transfer failed");
+        // 使用 transfer
+        payable(msg.sender).transfer(amount);
 
         emit Withdraw(msg.sender, amount);
     }
@@ -71,7 +65,6 @@ contract SimpleLending is ReentrancyGuard {
     // ================= 抵押 =================
 
     function depositCollateral() external payable {
-        // 必须大于0
         require(msg.value > 0, "Amount must be greater than 0");
 
         collateralBalances[msg.sender] += msg.value;
@@ -81,7 +74,7 @@ contract SimpleLending is ReentrancyGuard {
 
     // ================= 提取抵押 =================
 
-    function withdrawCollateral(uint256 amount) external nonReentrant {
+    function withdrawCollateral(uint256 amount) external {
         require(amount > 0, "Amount must be greater than 0");
         require(collateralBalances[msg.sender] >= amount, "Insufficient collateral");
 
@@ -97,45 +90,37 @@ contract SimpleLending is ReentrancyGuard {
             "Collateral ratio too low"
         );
 
-        // 更新状态
         collateralBalances[msg.sender] -= amount;
 
-        // 转账
-        (bool success, ) = msg.sender.call{value: amount}("");
-        require(success, "Transfer failed");
+        payable(msg.sender).transfer(amount);
 
         emit CollateralWithdrawn(msg.sender, amount);
     }
 
     // ================= 借款 =================
 
-    function borrow(uint256 amount) external nonReentrant {
+    function borrow(uint256 amount) external {
         require(amount > 0, "Amount must be greater than 0");
         require(address(this).balance >= amount, "Insufficient liquidity");
 
-        // 最大可借
         uint256 maxBorrowAmount =
             (collateralBalances[msg.sender] * collateralFactorBasisPoints) / 10000;
 
-        // 当前债务（含利息）
         uint256 currentDebt = calculateInterestAccrued(msg.sender);
 
         require(currentDebt + amount <= maxBorrowAmount, "Exceeds borrow limit");
 
-        // 更新债务
         borrowBalances[msg.sender] = currentDebt + amount;
         lastInterestAccrualTimestamp[msg.sender] = block.timestamp;
 
-        // 转账
-        (bool success, ) = msg.sender.call{value: amount}("");
-        require(success, "Borrow transfer failed");
+        payable(msg.sender).transfer(amount);
 
         emit Borrow(msg.sender, amount);
     }
 
     // ================= 还款 =================
 
-    function repay() external payable nonReentrant {
+    function repay() external payable {
         require(msg.value > 0, "Amount must be greater than 0");
 
         uint256 currentDebt = calculateInterestAccrued(msg.sender);
@@ -147,15 +132,10 @@ contract SimpleLending is ReentrancyGuard {
         if (amountToRepay > currentDebt) {
             amountToRepay = currentDebt;
 
-            uint256 refund = msg.value - currentDebt;
-
-            if (refund > 0) {
-                (bool success, ) = msg.sender.call{value: refund}("");
-                require(success, "Refund failed");
-            }
+            // 退回多余ETH
+            payable(msg.sender).transfer(msg.value - currentDebt);
         }
 
-        // 更新债务
         borrowBalances[msg.sender] = currentDebt - amountToRepay;
         lastInterestAccrualTimestamp[msg.sender] = block.timestamp;
 
@@ -165,16 +145,13 @@ contract SimpleLending is ReentrancyGuard {
     // ================= 利息计算 =================
 
     function calculateInterestAccrued(address user) public view returns (uint256) {
-        // 没借钱
         if (borrowBalances[user] == 0) {
             return 0;
         }
 
-        // 时间差
         uint256 timeElapsed =
             block.timestamp - lastInterestAccrualTimestamp[user];
 
-        // 利息计算（简单利息）
         uint256 interest =
             (borrowBalances[user] *
                 interestRateBasisPoints *
@@ -184,14 +161,12 @@ contract SimpleLending is ReentrancyGuard {
         return borrowBalances[user] + interest;
     }
 
-    // ================= 查询函数 =================
+    // ================= 查询 =================
 
-    // 最大可借 
     function getMaxBorrowAmount(address user) external view returns (uint256) {
         return (collateralBalances[user] * collateralFactorBasisPoints) / 10000;
     }
 
-    // 池子总流动性
     function getTotalLiquidity() external view returns (uint256) {
         return address(this).balance;
     }
