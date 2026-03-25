@@ -1,14 +1,10 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
-
-import "./day22_VRFConsumerBaseV2Plus.sol";
-import "./day22_VRFV2PlusClient.sol";
-import "./day22_VRFCoordinatorMock.sol";
+pragma solidity ^0.8.20;
 
 //导入VRF的库
-//import {VRFConsumerBaseV2Plus} from "@chainlink/contracts/src/v0.8/vrf/dev/VRFConsumerBaseV2Plus.sol";
+import {VRFConsumerBaseV2Plus} from "@chainlink/contracts/src/v0.8/vrf/dev/VRFConsumerBaseV2Plus.sol";
 //Chainlink提供的一个基础合约，得到一个名为 fulfillRandomWords 的特殊函数
-//import {VRFV2PlusClient} from "@chainlink/contracts/src/v0.8/vrf/dev/libraries/VRFV2PlusClient.sol";
+import {VRFV2PlusClient} from "@chainlink/contracts/src/v0.8/vrf/dev/libraries/VRFV2PlusClient.sol";
 //辅助库，可以配置以下内容：我们想要多少个随机数，回调使用多少 gas，使用哪个 Chainlink 任务
 contract FairChainLottery is VRFConsumerBaseV2Plus 
 {
@@ -71,8 +67,7 @@ contract FairChainLottery is VRFConsumerBaseV2Plus
             )
         });
 
-        //latestRequestId = s_vrfCoordinator.requestRandomWords(req);
-        latestRequestId = VRFCoordinatorMock(s_vrfCoordinator).requestRandomWords("");
+        latestRequestId = s_vrfCoordinator.requestRandomWords(req);
         //将请求发送到 Chainlink VRF
     }
 
