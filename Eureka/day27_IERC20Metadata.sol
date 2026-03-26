@@ -2,7 +2,7 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";//重入保护
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";//重入保护
 import "@openzeppelin/contracts/utils/math/SafeCast.sol"; //转换数字类型时保证安全
 
 //创建标准 IERC20 接口的小扩展
