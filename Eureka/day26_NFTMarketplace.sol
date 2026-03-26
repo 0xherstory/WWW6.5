@@ -2,7 +2,7 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";//ERC-721 NFT接口
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";//安全工具
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";//安全工具
 
 contract NFTMarketplace is ReentrancyGuard 
 {
