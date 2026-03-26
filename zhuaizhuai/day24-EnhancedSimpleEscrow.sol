@@ -1,5 +1,5 @@
-// SPDX-License-Identifier: MIT // 开源协议
-pragma solidity ^0.8.20; // Solidity 版本
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
 
 /// @title EnhancedSimpleEscrow - 具有超时、取消和事件的安全托管合约
 contract EnhancedSimpleEscrow {
