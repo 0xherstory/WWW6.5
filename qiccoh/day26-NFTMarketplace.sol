@@ -1,11 +1,11 @@
-
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 //不算太会,还需琢磨
 
 // 铸造NFT转向将它们货币化
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+// import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 /**
 - **列出他们的NFT出售**，设置价格甚至自定义版税
 - 通过直接向合约发送ETH来**购买NFT**
