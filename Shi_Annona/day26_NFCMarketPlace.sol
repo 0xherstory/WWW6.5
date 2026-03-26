@@ -4,8 +4,8 @@ pragma solidity ^0.8.20;
 
 //导入ERC721标准
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-//导入重入攻击
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+//导入重入攻击防御
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 //继承重入攻击防御
 contract NFTMarketplace is ReentrancyGuard {
