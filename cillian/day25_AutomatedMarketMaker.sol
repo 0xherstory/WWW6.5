@@ -35,7 +35,7 @@ contract AutomatedMarketMaker is ERC20 {
      * @dev 注入等比例的两种代币，并获得 LP Token（股权凭证）
      */
     function addLiquidity(uint256 amountA, uint256 amountB) external {
-        require(amountA > 0 && amountB > 0, "金额必须大于0");
+        require(amountA > 0 && amountB > 0, "Amounts must be > 0");
 
         // 将用户的代币转入合约（需要用户先在代币合约里对本合约授权 approve）
         tokenA.transferFrom(msg.sender, address(this), amountA);
@@ -68,8 +68,8 @@ contract AutomatedMarketMaker is ERC20 {
      * @param liquidityToRemove 想要退回的股权凭证数量
      */
     function removeLiquidity(uint256 liquidityToRemove) external returns (uint256 amountAOut, uint256 amountBOut) {
-        require(liquidityToRemove > 0, "退回的凭证数量必须大于0");
-        require(balanceOf(msg.sender) >= liquidityToRemove, "凭证余额不足");
+        require(liquidityToRemove > 0, "Liquidity to remove must be > 0");
+        require(balanceOf(msg.sender) >= liquidityToRemove, "Insufficient liquidity tokens");
 
         uint256 totalLiquidity = totalSupply();
 
@@ -77,7 +77,7 @@ contract AutomatedMarketMaker is ERC20 {
         amountAOut = (liquidityToRemove * reserveA) / totalLiquidity;
         amountBOut = (liquidityToRemove * reserveB) / totalLiquidity;
 
-        require(amountAOut > 0 && amountBOut > 0, "库存不足");
+        require(amountAOut > 0 && amountBOut > 0, "No liquidity in the pool");
 
         // 更新库存
         reserveA -= amountAOut;
@@ -98,8 +98,8 @@ contract AutomatedMarketMaker is ERC20 {
      * @param minBOut 用户要求最少换回的 B 数量（防止滑点过大被割肉）
      */
     function swapAforB(uint256 amountAIn, uint256 minBOut) external {
-        require(amountAIn > 0, "投入金额必须大于0");
-        require(reserveA > 0 && reserveB > 0, "池子是空的");
+        require(amountAIn > 0, "Amount must be > 0");
+        require(reserveA > 0 && reserveB > 0, "Insufficient reserves");
 
         // 扣除 0.3% 的手续费 (1000 - 997 = 3)
         uint256 amountAInWithFee = (amountAIn * 997) / 1000;
@@ -107,7 +107,7 @@ contract AutomatedMarketMaker is ERC20 {
         // 恒定乘积公式计算该给用户多少 B：dy = (y * dx) / (x + dx)
         uint256 amountBOut = (reserveB * amountAInWithFee) / (reserveA + amountAInWithFee);
 
-        require(amountBOut >= minBOut, "滑点过高，交易取消");
+        require(amountBOut >= minBOut, "Slippage too high");
 
         // 执行转账
         tokenA.transferFrom(msg.sender, address(this), amountAIn);
@@ -124,13 +124,13 @@ contract AutomatedMarketMaker is ERC20 {
      * @notice 用 B 换 A（逻辑同上）
      */
     function swapBforA(uint256 amountBIn, uint256 minAOut) external {
-        require(amountBIn > 0, "投入金额必须大于0");
-        require(reserveA > 0 && reserveB > 0, "池子是空的");
+        require(amountBIn > 0, "Amount must be > 0");
+        require(reserveA > 0 && reserveB > 0, "Insufficient reserves");
 
         uint256 amountBInWithFee = (amountBIn * 997) / 1000;
         uint256 amountAOut = (reserveA * amountBInWithFee) / (reserveB + amountBInWithFee);
 
-        require(amountAOut >= minAOut, "滑点过高");
+        require(amountAOut >= minAOut, "Slippage too high");
 
         tokenB.transferFrom(msg.sender, address(this), amountBIn);
         tokenA.transfer(msg.sender, amountAOut);

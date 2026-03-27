@@ -39,7 +39,7 @@ contract SimpleLending {
      * @notice 普通存款：把钱存入池子提供流动性
      */
     function deposit() external payable {
-        require(msg.value > 0, "存款金额必须大于0");
+        require(msg.value > 0, "Must deposit a positive amount");
         depositBalances[msg.sender] += msg.value;
         emit Deposit(msg.sender, msg.value);
     }
@@ -48,8 +48,8 @@ contract SimpleLending {
      * @notice 提取存款
      */
     function withdraw(uint256 amount) external {
-        require(amount > 0, "取款金额必须大于0");
-        require(depositBalances[msg.sender] >= amount, "余额不足");
+        require(amount > 0, "Must withdraw a positive amount");
+        require(depositBalances[msg.sender] >= amount, "Insufficient balance");
         
         depositBalances[msg.sender] -= amount;
         payable(msg.sender).transfer(amount);
@@ -60,7 +60,7 @@ contract SimpleLending {
      * @notice 存入抵押品：只有存了抵押品，下面才能借钱
      */
     function depositCollateral() external payable {
-        require(msg.value > 0, "抵押金额必须大于0");
+        require(msg.value > 0, "Must deposit a positive amount as collateral");
         collateralBalances[msg.sender] += msg.value;
         emit CollateralDeposited(msg.sender, msg.value);
     }
@@ -70,8 +70,8 @@ contract SimpleLending {
      * @dev 重要安全检查：取回后，剩下的抵押品必须还能盖住你的债务
      */
     function withdrawCollateral(uint256 amount) external {
-        require(amount > 0, "取回金额必须大于0");
-        require(collateralBalances[msg.sender] >= amount, "抵押品不足");
+        require(amount > 0, "Must withdraw a positive amount");
+        require(collateralBalances[msg.sender] >= amount, "Insufficient collateral");
 
         // 1. 计算当前欠债（含利息）
         uint256 borrowedAmount = calculateInterestAccrued(msg.sender);
@@ -81,7 +81,7 @@ contract SimpleLending {
         // 3. 检查：现在的抵押品 - 准备取走的 >= 必须留下的
         require(
             collateralBalances[msg.sender] - amount >= requiredCollateral,
-            "取回失败：剩余抵押品不足以支撑现有债务"
+            "Withdrawal would break collateral ratio"
         );
 
         collateralBalances[msg.sender] -= amount;
@@ -93,15 +93,15 @@ contract SimpleLending {
      * @notice 借款
      */
     function borrow(uint256 amount) external {
-        require(amount > 0, "借款金额必须大于0");
-        require(address(this).balance >= amount, "池子没钱了");
+        require(amount > 0, "Must borrow a positive amount");
+        require(address(this).balance >= amount, "Not enough liquidity in the pool");
 
         // 计算最大可借额度 (抵押品 * 75%)
         uint256 maxBorrowAmount = (collateralBalances[msg.sender] * collateralFactorBasisPoints) / 10000;
         // 计算当前债务
         uint256 currentDebt = calculateInterestAccrued(msg.sender);
 
-        require(currentDebt + amount <= maxBorrowAmount, "超过最大借款限额");
+        require(currentDebt + amount <= maxBorrowAmount, "Exceeds allowed borrow amount");
 
         // 更新债务并重置时间戳（开始计算新一段利息）
         borrowBalances[msg.sender] = currentDebt + amount;
@@ -116,10 +116,10 @@ contract SimpleLending {
      * @dev 如果你给多了，合约会自动把多余的钱退给你
      */
     function repay() external payable {
-        require(msg.value > 0, "还款金额必须大于0");
+        require(msg.value > 0, "Must repay a positive amount");
 
         uint256 currentDebt = calculateInterestAccrued(msg.sender);
-        require(currentDebt > 0, "你没有债务需要偿还");
+        require(currentDebt > 0, "No debt to repay");
 
         uint256 amountToRepay = msg.value;
         if (amountToRepay > currentDebt) {

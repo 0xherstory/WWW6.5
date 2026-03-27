@@ -40,7 +40,7 @@ contract EnhancedSimpleEscrow {
      * @param _deliveryTimeout 超时时长（例如：86400 代表 1 天）
      */
     constructor(address _seller, address _arbiter, uint256 _deliveryTimeout) {
-        require(_deliveryTimeout > 0, "超时时间必须大于0");
+        require(_deliveryTimeout > 0, "Delivery timeout must be greater than zero");
         buyer = msg.sender; // 部署合约的人默认为买家
         seller = _seller;
         arbiter = _arbiter;
@@ -52,16 +52,16 @@ contract EnhancedSimpleEscrow {
      * @dev 禁止直接向合约转账，必须通过特定的 deposit 函数，以防止逻辑混乱
      */
     receive() external payable {
-        revert("不允许直接转账，请使用 deposit()");
+        revert("Direct payments not allowed");
     }
 
     /**
      * @notice 买家存钱进入托管合约
      */
     function deposit() external payable {
-        require(msg.sender == buyer, "只有买家可以存钱");
-        require(state == EscrowState.AWAITING_PAYMENT, "钱已经存过了");
-        require(msg.value > 0, "存款金额必须大于0");
+        require(msg.sender == buyer, "Only buyer can deposit");
+        require(state == EscrowState.AWAITING_PAYMENT, "Already paid");
+        require(msg.value > 0, "Amount must be greater than zero");
 
         amount = msg.value;
         state = EscrowState.AWAITING_DELIVERY; // 状态转为：等待发货
@@ -73,8 +73,8 @@ contract EnhancedSimpleEscrow {
      * @notice 买家确认收货，资金释放给卖家
      */
     function confirmDelivery() external {
-        require(msg.sender == buyer, "只有买家可以确认收货");
-        require(state == EscrowState.AWAITING_DELIVERY, "当前不是等待收货状态");
+        require(msg.sender == buyer, "Only buyer can confirm");
+        require(state == EscrowState.AWAITING_DELIVERY, "Not in delivery state");
 
         state = EscrowState.COMPLETE;
         // 【关键】将合约中的钱转给卖家
@@ -86,8 +86,8 @@ contract EnhancedSimpleEscrow {
      * @notice 提交争议（买家没收到货，或者卖家发了货但买家不点确认）
      */
     function raiseDispute() external {
-        require(msg.sender == buyer || msg.sender == seller, "只有买卖双方可以发起争议");
-        require(state == EscrowState.AWAITING_DELIVERY, "当前状态无法发起争议");
+        require(msg.sender == buyer || msg.sender == seller, "Not authorized");
+        require(state == EscrowState.AWAITING_DELIVERY, "Can't dispute now");
 
         state = EscrowState.DISPUTED; // 状态转为：争议中
         emit DisputeRaised(msg.sender);
@@ -98,8 +98,8 @@ contract EnhancedSimpleEscrow {
      * @param _releaseToSeller 如果为 true 则钱给卖家，否则钱退给买家
      */
     function resolveDispute(bool _releaseToSeller) external {
-        require(msg.sender == arbiter, "只有仲裁者可以裁决");
-        require(state == EscrowState.DISPUTED, "当前没有待处理的争议");
+        require(msg.sender == arbiter, "Only arbiter can resolve");
+        require(state == EscrowState.DISPUTED, "No dispute to resolve");
 
         state = EscrowState.COMPLETE;
         if (_releaseToSeller) {
@@ -115,11 +115,10 @@ contract EnhancedSimpleEscrow {
      * @notice 超过约定时间卖家未发货，买家强制取消并退款
      */
     function cancelAfterTimeout() external {
-        require(msg.sender == buyer, "只有买家可以触发超时取消");
-        require(state == EscrowState.AWAITING_DELIVERY, "当前状态不可取消");
+        require(msg.sender == buyer, "Only buyer can trigger timeout cancellation");
+        require(state == EscrowState.AWAITING_DELIVERY, "Cannot cancel in current state");
         // 判断是否已经过了约定的超时时间
-        require(block.timestamp >= depositTime + deliveryTimeout, "尚未到达超时时间");
-
+        require(block.timestamp >= depositTime + deliveryTimeout, "Timeout not reached");
         state = EscrowState.CANCELLED;
         // 把钱退给买家
         payable(buyer).transfer(address(this).balance);
@@ -131,10 +130,10 @@ contract EnhancedSimpleEscrow {
      * @notice 双方协商一致取消交易
      */
     function cancelMutual() external {
-        require(msg.sender == buyer || msg.sender == seller, "无权操作");
+        require(msg.sender == buyer || msg.sender == seller, "Not authorized");
         require(
             state == EscrowState.AWAITING_DELIVERY || state == EscrowState.AWAITING_PAYMENT,
-            "交易已完成或已争议，无法直接取消"
+            "Cannot cancel now"
         );
 
         EscrowState previousState = state;
