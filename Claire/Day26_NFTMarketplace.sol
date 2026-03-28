@@ -7,7 +7,7 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 // 导入ERC721接口（NFT的标准接口）。用来操作NFT的转账、查询等。
 
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 // 导入重入攻击防护。防止黑客在转账过程中反复调用合约函数偷钱。
 
 contract NFTMarketplace is ReentrancyGuard {

@@ -7,7 +7,7 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 // 导入ERC20接口（代币标准接口）。用来操作代币的转账、余额查询等。
 
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 // 导入重入攻击防护。防止黑客在转账过程中反复调用合约函数偷钱。
 
 import "@openzeppelin/contracts/utils/math/SafeCast.sol"; // 如果需要使用 SafeCast
