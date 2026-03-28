@@ -2,7 +2,8 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+// ✅ 这里改了！把 ReentrancyGuard 路径换成正确的了
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 contract NFTMarketplace is ReentrancyGuard {
     address public owner;
@@ -122,23 +123,18 @@ contract NFTMarketplace is ReentrancyGuard {
         uint256 royaltyAmount = (msg.value * item.royaltyPercent) / 10000;
         uint256 sellerAmount = msg.value - feeAmount - royaltyAmount;
 
-        // 市场费用
         if (feeAmount > 0) {
             payable(feeRecipient).transfer(feeAmount);
         }
 
-        // 创作者版税
         if (royaltyAmount > 0 && item.royaltyReceiver != address(0)) {
             payable(item.royaltyReceiver).transfer(royaltyAmount);
         }
 
-        // 卖家支付
         payable(item.seller).transfer(sellerAmount);
 
-        // 将NFT转移给买家
         IERC721(item.nftAddress).safeTransferFrom(item.seller, msg.sender, item.tokenId);
 
-        // 删除列表
         delete listings[nftAddress][tokenId];
 
         emit Purchase(

@@ -2,7 +2,8 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+// ✅ 这里改了路径！
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 interface IERC20Metadata is IERC20 {
     function decimals() external view returns (uint8);
@@ -77,9 +78,8 @@ contract YieldFarming is ReentrancyGuard {
         emit Unstaked(msg.sender, amount);
     }
 
-    // ---------------- 这里修复了 ----------------
     function claimRewards() external nonReentrant {
-        uint256 reward = pendingRewards(msg.sender);  // ✅ 正确
+        uint256 reward = pendingRewards(msg.sender);
         require(reward > 0, "No rewards to claim");
 
         updateRewards(msg.sender);
@@ -109,7 +109,6 @@ contract YieldFarming is ReentrancyGuard {
         emit RewardRefilled(msg.sender, amount);
     }
 
-    // ---------------- 这里修复了 ----------------
     function updateRewards(address user) internal {
         StakerInfo storage staker = stakers[user];
 
@@ -118,7 +117,6 @@ contract YieldFarming is ReentrancyGuard {
             return;
         }
         
-        // 第一次质押，初始化时间
         if (staker.lastUpdate == 0) {
             staker.lastUpdate = block.timestamp;
             return;
