@@ -2,7 +2,6 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-// 修复路径：从 security 移至 utils
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 contract MiniDexPair is ReentrancyGuard {
