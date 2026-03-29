@@ -3,7 +3,7 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "./MiniDexPair.sol"; // 假设MiniDexPair.sol在同一目录中
+import "./day30_MiniDexPair.sol";
 
 contract MiniDexFactory is Ownable {
     event PairCreated(address indexed tokenA, address indexed tokenB, address pairAddress, uint);
