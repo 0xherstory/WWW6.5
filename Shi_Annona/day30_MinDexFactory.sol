@@ -3,7 +3,7 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import {MiniDexPair} from  "day30_MinDexPair.sol"; 
+import "./day30_MinDexPair.sol"; 
 
 contract MiniDexFactory is Ownable {
     //每次通过createPair()创建新配对时，这个事件就会触发
