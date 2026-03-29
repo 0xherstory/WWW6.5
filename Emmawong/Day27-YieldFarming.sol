@@ -1,30 +1,54 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/v4.9.3/contracts/token/ERC20/IERC20.sol";
-import "https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/v4.9.3/contracts/security/ReentrancyGuard.sol";
-import "https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/v4.9.3/contracts/utils/math/SafeCast.sol";
+interface IERC20 {
+    function totalSupply() external view returns (uint256);
+    function balanceOf(address account) external view returns (uint256);
+    function transfer(address to, uint256 value) external returns (bool);
+    function allowance(address owner, address spender) external view returns (uint256);
+    function approve(address spender, uint256 value) external returns (bool);
+    function transferFrom(address from, address to, uint256 value) external returns (bool);
+}
 
-// 用于获取 ERC-20 元数据(小数位数)的接口
 interface IERC20Metadata is IERC20 {
     function decimals() external view returns (uint8);
     function name() external view returns (string memory);
     function symbol() external view returns (string memory);
 }
 
-/// @title 收益耕作平台
-///     质押代币以随时间赚取奖励,可选紧急提取和管理员补充
+abstract contract ReentrancyGuard {
+    uint256 private _locked;
+
+    constructor() {
+        _locked = 1;
+    }
+
+    modifier nonReentrant() {
+        require(_locked == 1);
+        _locked = 2;
+        _;
+        _locked = 1;
+    }
+}
+
+library SafeCast {
+    function toUint256(int256 value) internal pure returns (uint256) {
+        require(value >= 0);
+        return uint256(value);
+    }
+}
+
 contract YieldFarming is ReentrancyGuard {
     using SafeCast for uint256;
 
     IERC20 public stakingToken;
     IERC20 public rewardToken;
 
-    uint256 public rewardRatePerSecond; // 每秒分配的奖励
+    uint256 public rewardRatePerSecond;
 
     address public owner;
 
-    uint8 public stakingTokenDecimals; // 存储质押代币的小数位数
+    uint8 public stakingTokenDecimals;
 
     struct StakerInfo {
         uint256 stakedAmount;
@@ -55,15 +79,13 @@ contract YieldFarming is ReentrancyGuard {
         rewardRatePerSecond = _rewardRatePerSecond;
         owner = msg.sender;
 
-        // 尝试获取小数位数
         try IERC20Metadata(_stakingToken).decimals() returns (uint8 decimals) {
             stakingTokenDecimals = decimals;
         } catch (bytes memory) {
-            stakingTokenDecimals = 18; // 如果获取失败,默认为 18 位小数
+            stakingTokenDecimals = 18;
         }
     }
 
-    ///     质押代币以开始赚取奖励
     function stake(uint256 amount) external nonReentrant {
         require(amount > 0, "Cannot stake 0");
 
@@ -75,7 +97,6 @@ contract YieldFarming is ReentrancyGuard {
         emit Staked(msg.sender, amount);
     }
 
-    ///     取消质押代币并可选择领取奖励
     function unstake(uint256 amount) external nonReentrant {
         require(amount > 0, "Cannot unstake 0");
         require(stakers[msg.sender].stakedAmount >= amount, "Not enough staked");
@@ -88,7 +109,6 @@ contract YieldFarming is ReentrancyGuard {
         emit Unstaked(msg.sender, amount);
     }
 
-    ///     领取累积的奖励
     function claimRewards() external nonReentrant {
         updateRewards(msg.sender);
 
@@ -102,7 +122,6 @@ contract YieldFarming is ReentrancyGuard {
         emit RewardClaimed(msg.sender, reward);
     }
 
-    ///     紧急取消质押而不领取奖励
     function emergencyWithdraw() external nonReentrant {
         uint256 amount = stakers[msg.sender].stakedAmount;
         require(amount > 0, "Nothing staked");
@@ -116,14 +135,12 @@ contract YieldFarming is ReentrancyGuard {
         emit EmergencyWithdraw(msg.sender, amount);
     }
 
-    ///     管理员可以补充奖励代币
     function refillRewards(uint256 amount) external onlyOwner {
         rewardToken.transferFrom(msg.sender, address(this), amount);
 
         emit RewardRefilled(msg.sender, amount);
     }
 
-    ///     更新质押者的奖励
     function updateRewards(address user) internal {
         StakerInfo storage staker = stakers[user];
 
@@ -137,7 +154,6 @@ contract YieldFarming is ReentrancyGuard {
         staker.lastUpdate = block.timestamp;
     }
 
-    ///     查看待处理奖励而不领取
     function pendingRewards(address user) external view returns (uint256) {
         StakerInfo memory staker = stakers[user];
 
@@ -152,9 +168,7 @@ contract YieldFarming is ReentrancyGuard {
         return pendingReward;
     }
 
-    ///     查看质押代币小数位数
     function getStakingTokenDecimals() external view returns (uint8) {
         return stakingTokenDecimals;
     }
 }
-

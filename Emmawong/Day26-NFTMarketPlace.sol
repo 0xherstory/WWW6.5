@@ -1,9 +1,33 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/v4.9.3/contracts/token/ERC721/IERC721.sol";
-import "https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/v4.9.3/contracts/security/ReentrancyGuard.sol";
-import "https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/v4.9.3/contracts/token/ERC721/utils/ERC721Holder.sol";
+interface IERC721 {
+    function ownerOf(uint256 tokenId) external view returns (address);
+    function getApproved(uint256 tokenId) external view returns (address);
+    function isApprovedForAll(address owner, address operator) external view returns (bool);
+    function safeTransferFrom(address from, address to, uint256 tokenId) external;
+}
+
+abstract contract ReentrancyGuard {
+    uint256 private _locked;
+
+    constructor() {
+        _locked = 1;
+    }
+
+    modifier nonReentrant() {
+        require(_locked == 1, "ReentrancyGuard: reentrant call");
+        _locked = 2;
+        _;
+        _locked = 1;
+    }
+}
+
+abstract contract ERC721Holder {
+    function onERC721Received(address, address, uint256, bytes calldata) external pure returns (bytes4) {
+        return 0x150b7a02;
+    }
+}
 
 contract NFTMarketplace is ReentrancyGuard, ERC721Holder {
     address public owner;
@@ -120,13 +144,9 @@ contract NFTMarketplace is ReentrancyGuard, ERC721Holder {
 
         require(sellerAmount >= 0, "Negative amount");
 
-        // ✅ 先转移 NFT（最安全顺序）
         IERC721(item.nftAddress).safeTransferFrom(item.seller, msg.sender, item.tokenId);
-
-        // ✅ 删除 listing
         delete listings[nftAddress][tokenId];
 
-        // ✅ 全部换成 call，安全无警告
         if (feeAmount > 0) {
             (bool f, ) = payable(feeRecipient).call{value: feeAmount}("");
             require(f, "Fee transfer failed");

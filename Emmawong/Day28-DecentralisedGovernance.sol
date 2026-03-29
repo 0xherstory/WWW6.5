@@ -1,8 +1,29 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/v4.9.3/contracts/token/ERC20/IERC20.sol";
-import "https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/v4.9.3/contracts/security/ReentrancyGuard.sol";
+interface IERC20 {
+    function totalSupply() external view returns (uint256);
+    function balanceOf(address account) external view returns (uint256);
+    function transfer(address to, uint256 value) external returns (bool);
+    function allowance(address owner, address spender) external view returns (uint256);
+    function approve(address spender, uint256 value) external returns (bool);
+    function transferFrom(address from, address to, uint256 value) external returns (bool);
+}
+
+abstract contract ReentrancyGuard {
+    uint256 private _locked;
+
+    constructor() {
+        _locked = 1;
+    }
+
+    modifier nonReentrant() {
+        require(_locked == 1);
+        _locked = 2;
+        _;
+        _locked = 1;
+    }
+}
 
 contract DecentralizedGovernance is ReentrancyGuard {
     IERC20 public governanceToken;
@@ -59,11 +80,9 @@ contract DecentralizedGovernance is ReentrancyGuard {
         proposalDepositAmount = _proposalDepositAmount;
     }
 
-    // 创建提案
     function createProposal(string memory description) external returns (uint256) {
         require(bytes(description).length > 0, "Empty description");
 
-        // 收取提案押金
         if (proposalDepositAmount > 0) {
             governanceToken.transferFrom(msg.sender, address(this), proposalDepositAmount);
         }
@@ -86,7 +105,6 @@ contract DecentralizedGovernance is ReentrancyGuard {
         return proposalId;
     }
 
-    // 投票
     function vote(uint256 proposalId, bool support) external {
         Proposal storage proposal = proposals[proposalId];
 
@@ -110,7 +128,6 @@ contract DecentralizedGovernance is ReentrancyGuard {
         emit Voted(proposalId, msg.sender, support, weight);
     }
 
-    // 完成提案（进入时间锁或取消）
     function finalizeProposal(uint256 proposalId) external {
         Proposal storage proposal = proposals[proposalId];
 
@@ -137,7 +154,6 @@ contract DecentralizedGovernance is ReentrancyGuard {
         }
     }
 
-    // 执行提案
     function executeProposal(uint256 proposalId) external {
         Proposal storage proposal = proposals[proposalId];
 
@@ -152,7 +168,6 @@ contract DecentralizedGovernance is ReentrancyGuard {
         emit ProposalExecuted(proposalId);
     }
 
-    // 退还押金
     function _refundDeposit(uint256 proposalId) internal {
         if (proposalDepositAmount > 0) {
             Proposal storage proposal = proposals[proposalId];
@@ -160,7 +175,6 @@ contract DecentralizedGovernance is ReentrancyGuard {
         }
     }
 
-    // 获取提案结果
     function getProposalResult(uint256 proposalId) external view returns (
         bool passed,
         uint256 forVotes,
@@ -172,7 +186,6 @@ contract DecentralizedGovernance is ReentrancyGuard {
         return (passed, proposal.forVotes, proposal.againstVotes, proposal.executed);
     }
 
-    // 管理员设置参数
     function setQuorumPercentage(uint256 _newQuorum) external onlyAdmin {
         require(_newQuorum > 0 && _newQuorum <= 100, "Invalid quorum");
         quorumPercentage = _newQuorum;
