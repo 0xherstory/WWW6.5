@@ -6,7 +6,7 @@ pragma solidity ^0.8.20;
 //- 自动处理代币分发
 //- 防止发售期间的转账（以防止短线抛售或机器人砸盘）
 //- 完成发售并将筹集的 ETH 转移给项目所有者
-import "./day12SimpleERC20.sol";
+import "./day12-SimpleERC20.sol";
 
 contract SimplifiedTokenSale is SimpleERC20{
     uint256 public tokenPrice;
