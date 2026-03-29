@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 contract NFTMarketplace is ReentrancyGuard {
     address public owner;
-    uint256 public marketplaceFeePercent; // in basis points (100 = 1%)
+    uint256 public marketplaceFeePercent; // 以基点为单位 (100 = 1%)
     address public feeRecipient;
 
     struct Listing {
@@ -15,7 +15,7 @@ contract NFTMarketplace is ReentrancyGuard {
         uint256 tokenId;
         uint256 price;
         address royaltyReceiver;
-        uint256 royaltyPercent; // in basis points
+        uint256 royaltyPercent; // 以基点为单位
         bool isListed;
     }
 
@@ -122,23 +122,23 @@ contract NFTMarketplace is ReentrancyGuard {
         uint256 royaltyAmount = (msg.value * item.royaltyPercent) / 10000;
         uint256 sellerAmount = msg.value - feeAmount - royaltyAmount;
 
-        // Marketplace fee
+        // 市场费用
         if (feeAmount > 0) {
             payable(feeRecipient).transfer(feeAmount);
         }
 
-        // Creator royalty
+        // 创作者版税
         if (royaltyAmount > 0 && item.royaltyReceiver != address(0)) {
             payable(item.royaltyReceiver).transfer(royaltyAmount);
         }
 
-        // Seller payout
+        // 卖家支付
         payable(item.seller).transfer(sellerAmount);
 
-        // Transfer NFT to buyer
+        // 将NFT转移给买家
         IERC721(item.nftAddress).safeTransferFrom(item.seller, msg.sender, item.tokenId);
 
-        // Remove listing
+        // 删除列表
         delete listings[nftAddress][tokenId];
 
         emit Purchase(
@@ -174,3 +174,4 @@ contract NFTMarketplace is ReentrancyGuard {
         revert("Unknown function");
     }
 }
+
