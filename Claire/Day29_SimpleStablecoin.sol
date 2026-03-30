@@ -22,8 +22,27 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/interfaces/IERC20Metadata.sol";
 // 导入ERC20元数据接口，用于获取代币的小数位数。
 
-import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
-// 导入Chainlink价格预言机接口，用于获取抵押品的实时价格。
+// 手动定义 Chainlink 价格预言机接口（无需导入外部依赖）
+interface AggregatorV3Interface {
+    function decimals() external view returns (uint8);
+    function description() external view returns (string memory);
+    function version() external view returns (uint256);
+    function getRoundData(uint80 _roundId) external view returns (
+        uint80 roundId,
+        int256 answer,
+        uint256 startedAt,
+        uint256 updatedAt,
+        uint80 answeredInRound
+    );
+    function latestRoundData() external view returns (
+        uint80 roundId,
+        int256 answer,
+        uint256 startedAt,
+        uint256 updatedAt,
+        uint80 answeredInRound
+    );
+}
+// Chainlink价格预言机接口，用于获取抵押品的实时价格。
 
 contract SimpleStablecoin is ERC20, Ownable, ReentrancyGuard, AccessControl {
 // 定义一个合约叫"简单稳定币"，它继承了：
