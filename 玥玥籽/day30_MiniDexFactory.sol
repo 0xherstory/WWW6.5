@@ -27,19 +27,21 @@ contract MiniDexFactory is Ownable {
         (address token0, address token1) = tokenA < tokenB ? (tokenA, tokenB) : (tokenB, tokenA);
         require(getPair[token0][token1] == address(0), "Pair already exists");
 
-        MiniDexPair newPair = new MiniDexPair();
-        newPair.initialize(token0, token1);
-
-        pair = address(newPair);
+        pair = address(new MiniDexPair(token0, token1));
         getPair[token0][token1] = pair;
         getPair[token1][token0] = pair;
-        allPairs.push(pair);
 
-        emit PairCreated(token0, token1, pair, allPairs.length);
+        allPairs.push(pair);
+        emit PairCreated(token0, token1, pair, allPairs.length - 1);
     }
 
     function allPairsLength() external view returns (uint256) {
         return allPairs.length;
+    }
+
+    function getPairAtIndex(uint256 index) external view returns (address) {
+        require(index < allPairs.length, "Index out of bounds");
+        return allPairs[index];
     }
 
     function setWhitelistMode(bool _enabled) external onlyOwner {
