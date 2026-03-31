@@ -8,7 +8,7 @@ pragma solidity ^0.8.20;
  * 支持添加流动性、移除流动性以及代币兑换（Swap）。
  */
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 contract MiniDexPair is ReentrancyGuard {
     // --- 状态变量 ---
