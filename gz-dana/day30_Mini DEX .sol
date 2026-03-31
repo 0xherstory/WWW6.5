@@ -1,8 +1,47 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+// ==================== 内联接口和合约定义 ====================
+
+// IERC20 接口
+interface IERC20 {
+    function totalSupply() external view returns (uint256);
+    function balanceOf(address account) external view returns (uint256);
+    function transfer(address to, uint256 amount) external returns (bool);
+    function allowance(address owner, address spender) external view returns (uint256);
+    function approve(address spender, uint256 amount) external returns (bool);
+    function transferFrom(address from, address to, uint256 amount) external returns (bool);
+    event Transfer(address indexed from, address indexed to, uint256 value);
+    event Approval(address indexed owner, address indexed spender, uint256 value);
+}
+
+// ReentrancyGuard 合约内联实现
+abstract contract ReentrancyGuard {
+    uint256 private constant _NOT_ENTERED = 1;
+    uint256 private constant _ENTERED = 2;
+    uint256 private _status;
+    
+    constructor() {
+        _status = _NOT_ENTERED;
+    }
+    
+    modifier nonReentrant() {
+        _nonReentrantBefore();
+        _;
+        _nonReentrantAfter();
+    }
+    
+    function _nonReentrantBefore() private {
+        require(_status != _ENTERED, "ReentrancyGuard: reentrant call");
+        _status = _ENTERED;
+    }
+    
+    function _nonReentrantAfter() private {
+        _status = _NOT_ENTERED;
+    }
+}
+
+// ==================== 你的 Mini DEX 合约 ====================
 
 contract MiniDexPair is ReentrancyGuard {
     address public immutable tokenA;
@@ -70,7 +109,8 @@ contract MiniDexPair is ReentrancyGuard {
         
         emit LiquidityRemoved(msg.sender, amountA, amountB, lpAmount);
     }
-     // 代币交换
+    
+    // 代币交换
     function swap(uint256 inputAmount, address inputToken) external nonReentrant {
         require(inputAmount > 0, "Zero input");
         require(inputToken == tokenA || inputToken == tokenB, "Invalid token");
