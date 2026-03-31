@@ -120,4 +120,5 @@ contract SimpleStablecoin is ERC20, Ownable, ReentrancyGuard, AccessControl {
     function supportsInterface(bytes4 interfaceId) public view override(AccessControl) returns (bool) {
         return super.supportsInterface(interfaceId);
     }
+    
 }

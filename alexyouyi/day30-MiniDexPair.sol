@@ -135,4 +135,5 @@ contract MiniDexPair is ReentrancyGuard {
     function getTotalLPSupply() external view returns (uint256) {
         return totalLPSupply;
     }
+    
 }
